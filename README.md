@@ -1,145 +1,56 @@
-# SRM Institute of Science and Technology - CSE Core
-## Java Full Stack Practical Mini-Projects
+# Spring Core Projects - SRM Java Full Stack Practical
 
-**Student Name**: Mayank Upadhayay  
-**Email**: mayankupadhayay2020115@gmail.com  
-**Course**: Java Full Stack Practical  
-**Department**: Computer Science and Engineering (CSE Core)
+This section contains Spring Framework projects demonstrating Inversion of Control (IoC), Dependency Injection (DI), Annotation Configuration, and Spring Web MVC.
 
----
+## Projects Overview
 
-## Repository Architecture & Directory Layout
+### 1. `dependency-injection-ioc` (XML-based IoC Container)
+Demonstrates classic Spring XML configuration, decoupled interfaces, constructor injection, setter injection, bean lifecycle callbacks, and bean scopes.
 
-This repository contains all enhanced mini-projects completed for the Java Full Stack Practical curriculum. Every project preserves its authentic architecture (GUI vs. Console) while incorporating advanced production-grade features, error handling, and unit test suites.
+#### Key Features & Advancements:
+- **Service Abstraction**: `MessageService` interface implemented by `EmailMessageService`, `SMSMessageService`, and `WhatsAppMessageService`.
+- **Dual Injection Support**:
+  - **Setter Injection**: Configured via `<property>` tag for `messagePrinterSetter`.
+  - **Constructor Injection**: Configured via `<constructor-arg>` tag for `messagePrinterConstructor`.
+- **Bean Lifecycle Callbacks**: `init-method="init"` and `destroy-method="cleanup"` declared in `applicationContext.xml`.
+- **Bean Scopes**: Side-by-side comparison of **Singleton** (shared instance) vs **Prototype** (new instance on every `getBean` lookup).
 
-```
-Mayank-SRM-Java-Practical/
-├── Maven Project/
-│   ├── calculator-executable-jar/       [GUI Application]
-│   │   ├── pom.xml                      (Configured with maven-jar-plugin for executable JAR)
-│   │   └── src/main/java/com/example/myapp/App.java (Swing Scientific Calculator)
-│   ├── first-app/                       [Console Application]
-│   │   ├── pom.xml
-│   │   └── src/main/java/com/example/myapp/App.java
-│   └── README.md
-│
-├── Module Project/
-│   ├── Module - 1/
-│   │   └── Inventory Management System/ [Console Application]
-│   │       ├── Main.java                (Interactive Scanner CLI Menu)
-│   │       ├── Product.java             (POJO with reorder levels and pricing)
-│   │       ├── Category.java            (Categorization model)
-│   │       ├── InventoryManager.java    (CRUD, sorting, POS billing, valuation)
-│   │       ├── FileManager.java         (Binary serialization & CSV export)
-│   │       ├── InventoryTest.java       (Automated test verification)
-│   │       ├── run.bat                  (One-click execution script)
-│   │       └── README.md
-│   ├── Module - 2/
-│   │   └── MultiThreadedFileProcessor/  [Console Application]
-│   │       ├── src/                     (Multithreaded ExecutorService batch processor)
-│   │       ├── data/                    (Q1 & Q2 monthly CSV sales data files)
-│   │       ├── run.bat                  (One-click execution script)
-│   │       └── README.md
-│   └── README.md
-│
-├── Spring Core/
-│   ├── dependency-injection-ioc/        [Spring IoC Container]
-│   │   ├── src/main/resources/applicationContext.xml (Setter & Constructor Injection, Scopes)
-│   │   ├── src/main/java/com/example/   (MessageService, Email, SMS, WhatsApp, Printer)
-│   │   └── pom.xml
-│   ├── first-spring-app/                [Annotation-based Spring Context]
-│   │   ├── src/main/java/com/example/App.java (@Configuration, @ComponentScan, @Service, @Autowired)
-│   │   └── pom.xml
-│   ├── spring-mvc/                      [Spring Web MVC Application]
-│   │   ├── src/main/java/com/example/controller/CalculatorWebController.java
-│   │   ├── src/main/webapp/WEB-INF/web.xml (DispatcherServlet registration)
-│   │   ├── src/main/webapp/WEB-INF/views/calculator.jsp
-│   │   ├── src/main/webapp/index.jsp
-│   │   └── pom.xml                      (Packaged as deployable WAR)
-│   └── README.md
-│
-└── README.md                            (Project documentation and run guides)
-```
-
----
-
-## 1. Maven Project: Executable Calculator [GUI]
-* **Form Factor**: Java Swing Graphical User Interface (`JFrame`, `JPanel`, `JButton`, `JTextField`, `JLabel`, `JScrollPane`).
-* **Packaging**: Single standalone executable `.jar` file built with `org.apache.maven.plugins:maven-jar-plugin:3.3.0`.
-* **Features**:
-  * Arithmetic operations: `ADD (+)`, `SUBTRACT (-)`, `MULTIPLY (*)`, `DIV (/)`.
-  * Scientific functions: `MOD (%)`, `POW (x^y)`, `SQRT (√x)`, `PERCENT (%)`.
-  * Editing & controls: `CLEAR (C)`, `DEL (Backspace)`, `+/- (Sign Toggle)`, `EXIT`.
-  * Real-time calculation audit log / history stream.
-  * Formatted integer/floating-point representation and zero-division safeguard.
-
-### Quick Run:
+#### Build & Run:
 ```bash
-cd "Maven Project/calculator-executable-jar"
+cd "Spring Core/dependency-injection-ioc"
+mvn compile exec:java
+```
+
+---
+
+### 2. `first-spring-app` (Annotation-based Spring Context)
+Demonstrates modern Spring annotation configuration without XML files.
+
+#### Key Features & Advancements:
+- **Stereotype Annotations**: `@Configuration`, `@ComponentScan`, `@Service`, and `@Component`.
+- **Autowired Dependency Injection**: Automatic constructor autowiring in `OrderService` injecting `PaymentGateway` and `MyService`.
+- **Runtime Execution**: Dynamic container bootstrapping via `AnnotationConfigApplicationContext`.
+
+#### Build & Run:
+```bash
+cd "Spring Core/first-spring-app"
+mvn compile exec:java
+```
+
+---
+
+### 3. `spring-mvc` (Spring Web MVC Application)
+Demonstrates enterprise Model-View-Controller (MVC) web application architecture packaged as a deployable WAR.
+
+#### Key Features & Advancements:
+- **DispatcherServlet Architecture**: Front-controller pattern registered in `web.xml`.
+- **View Resolver**: `InternalResourceViewResolver` resolving JSP views under `/WEB-INF/views/`.
+- **Web Controller**: `CalculatorWebController` handling `@GetMapping` for the interface and `@PostMapping` with `@RequestParam` and `Model` data binding for live mathematical evaluation.
+- **Interactive UI**: Clean, responsive calculator web interface with error banner and equation result cards.
+
+#### Build:
+```bash
+cd "Spring Core/spring-mvc"
 mvn clean package
-java -jar target/calculator-executable-jar-1.0-SNAPSHOT.jar
 ```
-
----
-
-## 2. Module Project - 1: Inventory Management System [Console]
-* **Form Factor**: Pure Console CLI (`Scanner`, formatted ASCII tables).
-* **Persistence**: Java Object Serialization (`products.dat`, `categories.dat`).
-* **Features**:
-  * Product and Category CRUD with unique automated IDs.
-  * Filter by category and user-defined price ranges.
-  * Multi-field sorting (Alphabetical A-Z, Price Low-High / High-Low, Stock levels).
-  * Point of Sale (POS) billing: decrements inventory stock, calculates 18% GST, and prints a formatted tax receipt.
-  * Inventory valuation analytics ($\sum \text{price} \times \text{stock}$) and export to `inventory_export.csv` and `inventory_summary.txt`.
-
-### Quick Run:
-```bash
-cd "Module Project/Module - 1/Inventory Management System"
-javac *.java
-java Main
-```
-
----
-
-## 3. Module Project - 2: Multi-Threaded CSV File Processor [Console]
-* **Form Factor**: Multi-threaded High-Throughput Console Engine.
-* **Concurrency**: `java.util.concurrent.ExecutorService`, `Callable<List<SalesRecord>>`, `Future<T>`, and thread-safe synchronizers.
-* **Features**:
-  * Batch processes 6 monthly sales datasets concurrently across Q1 and Q2 (`sales_january.csv` to `sales_june.csv`).
-  * Computes total revenue, quantity, average transaction value, leading product, and category market share percentages.
-  * Thread pool benchmark reporting millisecond execution speeds.
-  * Dual output: Formatted text report (`report.txt`) and tabular CSV (`sales_summary.csv`).
-
-### Quick Run:
-```bash
-cd "Module Project/Module - 2/MultiThreadedFileProcessor"
-javac -d out src\Main.java src\model\SalesRecord.java src\config\ProcessorConfig.java src\processor\CsvFileProcessor.java src\report\ReportAggregator.java
-java -cp out Main
-```
-
----
-
-## 4. Spring Core Projects
-* **`dependency-injection-ioc`**:
-  * Demonstrates XML bean definition (`applicationContext.xml`), `MessageService` abstractions (`EmailMessageService`, `SMSMessageService`, `WhatsAppMessageService`), both Setter and Constructor Injection, singleton vs prototype scopes, and bean lifecycle callbacks (`init-method`, `destroy-method`).
-  * Run: `mvn compile exec:java`
-* **`first-spring-app`**:
-  * Demonstrates modern annotation-driven Spring configuration with `@Configuration`, `@ComponentScan`, `@Service`, `@Component`, and `@Autowired` constructor injection across layered services.
-  * Run: `mvn compile exec:java`
-* **`spring-mvc`**:
-  * Demonstrates Jakarta/Spring Web MVC architecture with `DispatcherServlet`, `CalculatorWebController`, and JSP views (`calculator.jsp`, `index.jsp`) packaged as a deployable WAR.
-  * Build: `mvn clean package`
-
----
-
-## Verification & Automated Test Status
-
-| Module | Verification Method | Status |
-|---|---|---|
-| **Calculator GUI** | `mvn clean test package` | PASS (100% Tests Passed, Executable JAR built) |
-| **First Maven App** | `mvn clean test package` | PASS (100% Tests Passed) |
-| **Inventory System** | `InventoryTest.java` (6 Unit Flows) | PASS (CRUD, Stock, POS Billing, CSV Export) |
-| **File Processor** | 6-thread concurrent execution benchmark | PASS (49 records parsed, 12 ms duration) |
-| **Spring IoC & DI** | `mvn clean test exec:java` | PASS (Context loaded, beans injected, scopes verified) |
-| **First Spring App** | `mvn clean test exec:java` | PASS (Component scan & autowiring verified) |
-| **Spring MVC** | `mvn clean package` | PASS (WAR built successfully) |
+*(Produces `target/spring-mvc.war` for deployment on any standard servlet container such as Apache Tomcat or Jetty)*
