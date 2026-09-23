@@ -1,7 +1,0 @@
-ID,Name,Category,Price,Stock,ReorderLevel,Supplier,TotalValue
-101,"Dell Wireless Mouse","Electronics",650.00,25,5,"Logitech Tech",16250.00
-102,"Mechanical Keyboard","Electronics",2400.00,12,4,"Redragon India",28800.00
-103,"A4 Spiral Notebook","Stationery",85.00,50,15,"Classmate",4250.00
-104,"Ergonomic Office Chair","Furniture",5200.00,6,2,"Featherlite",31200.00
-105,"Gel Pens Pack (10x)","Stationery",120.00,4,10,"Reynolds",480.00
-999,"Test Headphones","Electronics",1500.00,8,3,"Sony",12000.00
