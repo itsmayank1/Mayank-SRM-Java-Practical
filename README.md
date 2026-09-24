@@ -1,145 +1,80 @@
 # SRM Institute of Science and Technology - CSE Core
 ## Java Full Stack Practical Mini-Projects
 
-**Student Name**: Mayank Upadhayay  
+**Student Name**: Mayank Upadhyay  
 **Email**: mayankupadhayay2020115@gmail.com  
 **Course**: Java Full Stack Practical  
 **Department**: Computer Science and Engineering (CSE Core)
 
 ---
 
-## Repository Architecture & Directory Layout
-
-This repository contains all enhanced mini-projects completed for the Java Full Stack Practical curriculum. Every project preserves its authentic architecture (GUI vs. Console) while incorporating advanced production-grade features, error handling, and unit test suites.
+## Repository Structure
 
 ```
-Mayank-SRM-Java-Practical/
-├── Maven Project/
-│   ├── calculator-executable-jar/       [GUI Application]
-│   │   ├── pom.xml                      (Configured with maven-jar-plugin for executable JAR)
-│   │   └── src/main/java/com/example/myapp/App.java (Swing Scientific Calculator)
-│   ├── first-app/                       [Console Application]
-│   │   ├── pom.xml
-│   │   └── src/main/java/com/example/myapp/App.java
-│   └── README.md
-│
-├── Module Project/
-│   ├── Module - 1/
-│   │   └── Inventory Management System/ [Console Application]
-│   │       ├── Main.java                (Interactive Scanner CLI Menu)
-│   │       ├── Product.java             (POJO with reorder levels and pricing)
-│   │       ├── Category.java            (Categorization model)
-│   │       ├── InventoryManager.java    (CRUD, sorting, POS billing, valuation)
-│   │       ├── FileManager.java         (Binary serialization & CSV export)
-│   │       ├── InventoryTest.java       (Automated test verification)
-│   │       ├── run.bat                  (One-click execution script)
-│   │       └── README.md
-│   ├── Module - 2/
-│   │   └── MultiThreadedFileProcessor/  [Console Application]
-│   │       ├── src/                     (Multithreaded ExecutorService batch processor)
-│   │       ├── data/                    (Q1 & Q2 monthly CSV sales data files)
-│   │       ├── run.bat                  (One-click execution script)
-│   │       └── README.md
-│   └── README.md
-│
-├── Spring Core/
-│   ├── dependency-injection-ioc/        [Spring IoC Container]
-│   │   ├── src/main/resources/applicationContext.xml (Setter & Constructor Injection, Scopes)
-│   │   ├── src/main/java/com/example/   (MessageService, Email, SMS, WhatsApp, Printer)
-│   │   └── pom.xml
-│   ├── first-spring-app/                [Annotation-based Spring Context]
-│   │   ├── src/main/java/com/example/App.java (@Configuration, @ComponentScan, @Service, @Autowired)
-│   │   └── pom.xml
-│   ├── spring-mvc/                      [Spring Web MVC Application]
-│   │   ├── src/main/java/com/example/controller/CalculatorWebController.java
-│   │   ├── src/main/webapp/WEB-INF/web.xml (DispatcherServlet registration)
-│   │   ├── src/main/webapp/WEB-INF/views/calculator.jsp
-│   │   ├── src/main/webapp/index.jsp
-│   │   └── pom.xml                      (Packaged as deployable WAR)
-│   └── README.md
-│
-└── README.md                            (Project documentation and run guides)
+Module Project/
+├── Module - 1/
+│   └── Inventory Management System/     (Console-based Inventory & POS Billing)
+└── Module - 2/
+    ├── ThreadFileProcessing/            (Multi-Threaded CSV Processing Engine)
+    └── calculator-executable-jar/       (Swing GUI Calculator Executable JAR)
 ```
 
 ---
 
-## 1. Maven Project: Executable Calculator [GUI]
-* **Form Factor**: Java Swing Graphical User Interface (`JFrame`, `JPanel`, `JButton`, `JTextField`, `JLabel`, `JScrollPane`).
-* **Packaging**: Single standalone executable `.jar` file built with `org.apache.maven.plugins:maven-jar-plugin:3.3.0`.
-* **Features**:
-  * Arithmetic operations: `ADD (+)`, `SUBTRACT (-)`, `MULTIPLY (*)`, `DIV (/)`.
-  * Scientific functions: `MOD (%)`, `POW (x^y)`, `SQRT (√x)`, `PERCENT (%)`.
-  * Editing & controls: `CLEAR (C)`, `DEL (Backspace)`, `+/- (Sign Toggle)`, `EXIT`.
-  * Real-time calculation audit log / history stream.
-  * Formatted integer/floating-point representation and zero-division safeguard.
+## Overview of Modules
 
-### Quick Run:
-```bash
-cd "Maven Project/calculator-executable-jar"
-mvn clean package
-java -jar target/calculator-executable-jar-1.0-SNAPSHOT.jar
-```
+### Module - 1: Inventory Management System (Console)
+A menu-driven enterprise inventory catalog and billing management console application built in pure Java with serialization persistence.
 
----
+- **Product & Category CRUD**: Automated ID assignment, supplier tracking, and reorder threshold levels.
+- **Search & Filter**: Search by keyword, filter by category, and search by price range (`min` to `max`).
+- **Sorting Engine**: Sort products by Name (A-Z), Price (Low-High / High-Low), and Stock quantity.
+- **Point of Sale (POS) Billing**: Interactive sales transaction that decrements inventory stock, calculates 18% GST, and prints a formatted receipt.
+- **Valuation & Analytics**: Computes total asset inventory valuation ($\sum \text{price} \times \text{stock}$) and exports catalog to `inventory_export.csv`.
 
-## 2. Module Project - 1: Inventory Management System [Console]
-* **Form Factor**: Pure Console CLI (`Scanner`, formatted ASCII tables).
-* **Persistence**: Java Object Serialization (`products.dat`, `categories.dat`).
-* **Features**:
-  * Product and Category CRUD with unique automated IDs.
-  * Filter by category and user-defined price ranges.
-  * Multi-field sorting (Alphabetical A-Z, Price Low-High / High-Low, Stock levels).
-  * Point of Sale (POS) billing: decrements inventory stock, calculates 18% GST, and prints a formatted tax receipt.
-  * Inventory valuation analytics ($\sum \text{price} \times \text{stock}$) and export to `inventory_export.csv` and `inventory_summary.txt`.
-
-### Quick Run:
+**Run Command**:
 ```bash
 cd "Module Project/Module - 1/Inventory Management System"
 javac *.java
 java Main
 ```
+*(Or double-click `run.bat`)*
 
 ---
 
-## 3. Module Project - 2: Multi-Threaded CSV File Processor [Console]
-* **Form Factor**: Multi-threaded High-Throughput Console Engine.
-* **Concurrency**: `java.util.concurrent.ExecutorService`, `Callable<List<SalesRecord>>`, `Future<T>`, and thread-safe synchronizers.
-* **Features**:
-  * Batch processes 6 monthly sales datasets concurrently across Q1 and Q2 (`sales_january.csv` to `sales_june.csv`).
-  * Computes total revenue, quantity, average transaction value, leading product, and category market share percentages.
-  * Thread pool benchmark reporting millisecond execution speeds.
-  * Dual output: Formatted text report (`report.txt`) and tabular CSV (`sales_summary.csv`).
+### Module - 2: Core Practical Applications
 
-### Quick Run:
+#### 1. ThreadFileProcessing (Multi-Threaded CSV Processor)
+A concurrent Java application demonstrating multi-threading, the Builder pattern, and thread-safe data aggregation.
+
+- **Concurrency**: Parallel processing of 6 monthly CSV datasets (`sales_january.csv` to `sales_june.csv`) using an `ExecutorService` thread pool.
+- **Analytics**: Calculates total revenue, physical units sold, average transaction size, and category market shares.
+- **Performance Benchmark**: High-precision timer logging thread completion in milliseconds.
+- **Dual Export**: Generates both an executive summary (`report.txt`) and tabular CSV (`sales_summary.csv`).
+
+**Run Command**:
 ```bash
-cd "Module Project/Module - 2/MultiThreadedFileProcessor"
+cd "Module Project/Module - 2/ThreadFileProcessing"
 javac -d out src\Main.java src\model\SalesRecord.java src\config\ProcessorConfig.java src\processor\CsvFileProcessor.java src\report\ReportAggregator.java
 java -cp out Main
 ```
+*(Or double-click `run.bat`)*
 
 ---
 
-## 4. Spring Core Projects
-* **`dependency-injection-ioc`**:
-  * Demonstrates XML bean definition (`applicationContext.xml`), `MessageService` abstractions (`EmailMessageService`, `SMSMessageService`, `WhatsAppMessageService`), both Setter and Constructor Injection, singleton vs prototype scopes, and bean lifecycle callbacks (`init-method`, `destroy-method`).
-  * Run: `mvn compile exec:java`
-* **`first-spring-app`**:
-  * Demonstrates modern annotation-driven Spring configuration with `@Configuration`, `@ComponentScan`, `@Service`, `@Component`, and `@Autowired` constructor injection across layered services.
-  * Run: `mvn compile exec:java`
-* **`spring-mvc`**:
-  * Demonstrates Jakarta/Spring Web MVC architecture with `DispatcherServlet`, `CalculatorWebController`, and JSP views (`calculator.jsp`, `index.jsp`) packaged as a deployable WAR.
-  * Build: `mvn clean package`
+#### 2. calculator-executable-jar (GUI Calculator)
+A Graphical User Interface (GUI) calculator built with Java Swing and packaged as a standalone executable JAR via `maven-jar-plugin:3.3.0`.
 
----
+- **Operations**: `ADD (+)`, `SUBTRACT (-)`, `MULTIPLY (*)`, `DIV (/)`.
+- **Scientific Functions**: `MOD (%)`, `POW (x^y)`, `SQRT (√x)`, `PERCENT (%)`.
+- **Controls**: `CLEAR (C)`, `DEL (Backspace)`, `+/- (Sign Toggle)`, `EXIT`.
+- **History Log**: Scrollable real-time calculation audit log.
+- **Clean Number Formatting**: Integer results display cleanly without redundant decimals, with zero-division protection.
 
-## Verification & Automated Test Status
-
-| Module | Verification Method | Status |
-|---|---|---|
-| **Calculator GUI** | `mvn clean test package` | PASS (100% Tests Passed, Executable JAR built) |
-| **First Maven App** | `mvn clean test package` | PASS (100% Tests Passed) |
-| **Inventory System** | `InventoryTest.java` (6 Unit Flows) | PASS (CRUD, Stock, POS Billing, CSV Export) |
-| **File Processor** | 6-thread concurrent execution benchmark | PASS (49 records parsed, 12 ms duration) |
-| **Spring IoC & DI** | `mvn clean test exec:java` | PASS (Context loaded, beans injected, scopes verified) |
-| **First Spring App** | `mvn clean test exec:java` | PASS (Component scan & autowiring verified) |
-| **Spring MVC** | `mvn clean package` | PASS (WAR built successfully) |
+**Build & Run Command**:
+```bash
+cd "Module Project/Module - 2/calculator-executable-jar"
+mvn clean package
+java -jar target/calculator-executable-jar-1.0-SNAPSHOT.jar
+```
+*(Or double-click the `.jar` file in `target/`)*
