@@ -1,6 +1,6 @@
 # Module Project - SRM Full Stack Practical
 
-This repository contains the two core practical modules developed for the Java Full Stack curriculum.
+This repository contains the three core practical modules developed for the Java Full Stack curriculum.
 
 ## Structure
 
@@ -8,9 +8,16 @@ This repository contains the two core practical modules developed for the Java F
 Module Project/
 ├── Module - 1/
 │   └── Inventory Management System/     (Console Application)
-└── Module - 2/
-    ├── ThreadFileProcessing/            (Multi-Threaded CSV Processing Console Application)
-    └── calculator-executable-jar/       (Swing GUI Calculator Maven Application)
+│
+├── Module - 2/
+│   ├── ThreadFileProcessing/            (Multi-Threaded CSV Processing Console Application)
+│   └── calculator-executable-jar/       (Swing GUI Calculator Maven Application)
+│
+└── Module - 3/
+    ├── dependency-injection-ioc/        (Spring Core XML-based IoC & DI)
+    ├── first-spring-app/                (Spring Core Annotation Context)
+    ├── spring-mvc/                      (Spring Web MVC WAR Application)
+    └── request-mapping-controller/      (Spring Boot REST Web API Application)
 ```
 
 ---
@@ -32,45 +39,68 @@ cd "Module Project/Module - 1/Inventory Management System"
 javac *.java
 java Main
 ```
-*(Or double-click `run.bat` on Windows)*
 
 ---
 
 ## Module - 2: Core Practical Applications
 
 ### 1. ThreadFileProcessing (Multi-Threaded CSV Processor)
-A concurrent Java application demonstrating multi-threading, the Builder design pattern, and thread-safe data aggregation.
+- Concurrently processes 6 monthly CSV datasets (`sales_january.csv` to `sales_june.csv`) using an `ExecutorService` thread pool.
+- Computes total revenue, physical units sold, average transaction size, and category market shares.
+- Benchmark performance timing reporting execution speed in milliseconds.
+- Dual export: Text summary (`report.txt`) and tabular CSV (`sales_summary.csv`).
 
-- **Features**:
-  - Concurrently processes 6 monthly CSV datasets (`sales_january.csv` to `sales_june.csv`) using an `ExecutorService` thread pool.
-  - Computes total revenue, physical units sold, average transaction size, and category market shares.
-  - Benchmark performance timing reporting execution speed in milliseconds.
-  - Dual export: Text summary (`report.txt`) and tabular CSV (`sales_summary.csv`).
-
-#### How to Run:
 ```bash
 cd "Module Project/Module - 2/ThreadFileProcessing"
 javac -d out src\Main.java src\model\SalesRecord.java src\config\ProcessorConfig.java src\processor\CsvFileProcessor.java src\report\ReportAggregator.java
 java -cp out Main
 ```
-*(Or double-click `run.bat` on Windows)*
-
----
 
 ### 2. calculator-executable-jar (GUI Calculator)
-A Graphical User Interface (GUI) calculator built using Java Swing and packaged as a standalone executable JAR via `maven-jar-plugin:3.3.0`.
+- Arithmetic operations: `ADD (+)`, `SUBTRACT (-)`, `MULTIPLY (*)`, `DIV (/)`.
+- Scientific functions: `MOD (%)`, `POW (x^y)`, `SQRT (√x)`, `PERCENT (%)`.
+- Controls: `CLEAR (C)`, `DEL (Backspace)`, `+/- (Sign Toggle)`, `EXIT`.
+- Scrollable real-time calculation history log.
+- Packaged as a standalone executable JAR via `maven-jar-plugin:3.3.0`.
 
-- **Features**:
-  - Arithmetic operations: `ADD (+)`, `SUBTRACT (-)`, `MULTIPLY (*)`, `DIV (/)`.
-  - Scientific functions: `MOD (%)`, `POW (x^y)`, `SQRT (√x)`, `PERCENT (%)`.
-  - Controls: `CLEAR (C)`, `DEL (Backspace)`, `+/- (Sign Toggle)`, `EXIT`.
-  - Scrollable real-time calculation history log.
-  - Formatted integer/decimal presentation and zero-division safeguard.
-
-#### How to Build & Run:
 ```bash
 cd "Module Project/Module - 2/calculator-executable-jar"
 mvn clean package
 java -jar target/calculator-executable-jar-1.0-SNAPSHOT.jar
 ```
-*(Or double-click the `.jar` file in `target/` on Windows)*
+
+---
+
+## Module - 3: Spring Framework & Spring Boot
+
+### 1. dependency-injection-ioc (XML-based IoC & DI)
+Demonstrates classic Spring XML configuration (`applicationContext.xml`), constructor injection, setter injection, bean lifecycle callbacks, and scopes.
+
+```bash
+cd "Module Project/Module - 3/dependency-injection-ioc"
+mvn compile exec:java
+```
+
+### 2. first-spring-app (Annotation-Driven Spring Context)
+Demonstrates modern Spring annotation configuration without XML files using `@Configuration`, `@ComponentScan`, `@Service`, `@Component`, and `@Autowired`.
+
+```bash
+cd "Module Project/Module - 3/first-spring-app"
+mvn compile exec:java
+```
+
+### 3. spring-mvc (Spring Web MVC)
+Demonstrates standard Spring Web MVC architecture with `DispatcherServlet`, `CalculatorWebController`, and interactive JSP views packaged into a deployable WAR.
+
+```bash
+cd "Module Project/Module - 3/spring-mvc"
+mvn clean package -DskipTests
+```
+
+### 4. request-mapping-controller (Spring Boot REST Web API)
+A modern Spring Boot application created with Spring Initializr using `Spring Web` managing student records via REST endpoints.
+
+```bash
+cd "Module Project/Module - 3/request-mapping-controller"
+mvn spring-boot:run
+```

@@ -14,14 +14,21 @@
 Module Project/
 ├── Module - 1/
 │   └── Inventory Management System/     (Console-based Inventory & POS Billing)
-└── Module - 2/
-    ├── ThreadFileProcessing/            (Multi-Threaded CSV Processing Engine)
-    └── calculator-executable-jar/       (Swing GUI Calculator Executable JAR)
+│
+├── Module - 2/
+│   ├── ThreadFileProcessing/            (Multi-Threaded CSV Processing Engine)
+│   └── calculator-executable-jar/       (Swing GUI Calculator Executable JAR)
+│
+└── Module - 3/
+    ├── dependency-injection-ioc/        (Spring Core XML-based IoC & DI)
+    ├── first-spring-app/                (Spring Core Annotation Context)
+    ├── spring-mvc/                      (Spring Web MVC WAR Application)
+    └── request-mapping-controller/      (Spring Boot REST Web Controller)
 ```
 
 ---
 
-## Overview of Modules
+## Detailed Module Documentation
 
 ### Module - 1: Inventory Management System (Console)
 A menu-driven enterprise inventory catalog and billing management console application built in pure Java with serialization persistence.
@@ -60,8 +67,6 @@ java -cp out Main
 ```
 *(Or double-click `run.bat`)*
 
----
-
 #### 2. calculator-executable-jar (GUI Calculator)
 A Graphical User Interface (GUI) calculator built with Java Swing and packaged as a standalone executable JAR via `maven-jar-plugin:3.3.0`.
 
@@ -78,3 +83,51 @@ mvn clean package
 java -jar target/calculator-executable-jar-1.0-SNAPSHOT.jar
 ```
 *(Or double-click the `.jar` file in `target/`)*
+
+---
+
+### Module - 3: Spring Framework & Spring Boot
+
+#### 1. dependency-injection-ioc (XML-based IoC & DI)
+Demonstrates classic Spring XML configuration (`applicationContext.xml`), constructor injection, setter injection, bean lifecycle callbacks (`init` / `cleanup`), and singleton vs. prototype scopes.
+
+**Run Command**:
+```bash
+cd "Module Project/Module - 3/dependency-injection-ioc"
+mvn compile exec:java
+```
+
+#### 2. first-spring-app (Annotation-Driven Spring Context)
+Demonstrates modern Spring annotation configuration without XML files using `@Configuration`, `@ComponentScan`, `@Service`, `@Component`, and `@Autowired` constructor injection across layered services.
+
+**Run Command**:
+```bash
+cd "Module Project/Module - 3/first-spring-app"
+mvn compile exec:java
+```
+
+#### 3. spring-mvc (Spring Web MVC)
+Demonstrates standard Spring Web MVC architecture with `DispatcherServlet`, `CalculatorWebController`, and interactive JSP views packaged into a deployable WAR.
+
+**Build Command**:
+```bash
+cd "Module Project/Module - 3/spring-mvc"
+mvn clean package -DskipTests
+```
+
+#### 4. request-mapping-controller (Spring Boot REST Web API)
+A modern Spring Boot application created with Spring Initializr (`start.spring.io`) using the `Spring Web` dependency.
+
+- **Endpoints**:
+  - `GET /api/students`: Retrieve all students.
+  - `GET /api/students/{id}`: Retrieve student by ID (`@PathVariable`).
+  - `GET /api/students/search`: Filter students by department or name query parameter (`@RequestParam`).
+  - `POST /api/students`: Create new student entity (`@RequestBody`).
+  - `PUT /api/students/{id}`: Update student record.
+  - `DELETE /api/students/{id}`: Remove student record.
+
+**Run Command**:
+```bash
+cd "Module Project/Module - 3/request-mapping-controller"
+mvn spring-boot:run
+```
