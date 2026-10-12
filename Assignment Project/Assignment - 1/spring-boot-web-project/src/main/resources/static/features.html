@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Features - Student Management System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>STUDENT MANAGEMENT SYSTEM</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/about.html">Project Creator</a>
+            <a href="/product.html">Product</a>
+            <a href="/features.html" class="active">Features</a>
+            <a href="/contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>PROJECT FEATURES</h2>
+        
+        <!-- Assignment Checklist -->
+        <ul class="feature-list">
+            <li>✓ Add Student</li>
+            <li>✓ View Student</li>
+            <li>✓ Update Student</li>
+            <li>✓ Delete Student</li>
+            <li>✓ Search Student</li>
+            <li>✓ Student Reports</li>
+        </ul>
+
+        <!-- Interactive Student Demo -->
+        <div class="interactive-card">
+            <h3>⚡ Live Student Demo (Interactive)</h3>
+            <p class="text-muted">Add and delete students dynamically in real-time:</p>
+            
+            <form id="studentForm" onsubmit="addStudent(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Student Name</label>
+                        <input type="text" id="name" placeholder="e.g. John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rollNo">Roll No</label>
+                        <input type="text" id="rollNo" placeholder="e.g. CS101" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="course">Course</label>
+                        <input type="text" id="course" placeholder="e.g. B.Tech CS" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn">+ Add Student</button>
+            </form>
+
+            <table class="data-table" id="studentTable">
+                <thead>
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Name</th>
+                        <th>Course</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="studentBody">
+                    <tr>
+                        <td>CS101</td>
+                        <td>Aarav Sharma</td>
+                        <td>B.Tech Computer Science</td>
+                        <td><button class="btn btn-danger" onclick="deleteStudent(this)">Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td>CS102</td>
+                        <td>Priya Verma</td>
+                        <td>B.Tech Information Technology</td>
+                        <td><button class="btn btn-danger" onclick="deleteStudent(this)">Delete</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function addStudent(event) {
+            event.preventDefault();
+            const name = document.getElementById("name").value.trim();
+            const rollNo = document.getElementById("rollNo").value.trim();
+            const course = document.getElementById("course").value.trim();
+
+            if (!name || !rollNo || !course) return;
+
+            const tbody = document.getElementById("studentBody");
+            const newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td>${rollNo}</td>
+                <td>${name}</td>
+                <td>${course}</td>
+                <td><button class="btn btn-danger" onclick="deleteStudent(this)">Delete</button></td>
+            `;
+            tbody.appendChild(newRow);
+
+            // Reset form inputs
+            document.getElementById("studentForm").reset();
+        }
+
+        function deleteStudent(button) {
+            const row = button.closest("tr");
+            row.remove();
+        }
+    </script>
+
+</body>
+</html>

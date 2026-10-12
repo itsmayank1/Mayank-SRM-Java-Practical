@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Student Management System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>STUDENT MANAGEMENT SYSTEM</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/about.html">Project Creator</a>
+            <a href="/product.html">Product</a>
+            <a href="/features.html">Features</a>
+            <a href="/contact.html" class="active">Contact</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>CONTACT</h2>
+
+        <!-- Assignment Required Details -->
+        <div class="info-group"><span class="info-label">Project Creator:</span> Rahul Kumar</div>
+        <div class="info-group"><span class="info-label">Email:</span> rahul@example.com</div>
+        <div class="info-group"><span class="info-label">Phone:</span> 9876543210</div>
+        <div class="info-group"><span class="info-label">College:</span> ABC Engineering College</div>
+        <div class="info-group"><span class="info-label">Location:</span> Agra, Uttar Pradesh</div>
+
+        <!-- Interactive Send Message Form -->
+        <div class="interactive-card">
+            <h3>✉️ Send a Message</h3>
+            
+            <div id="successAlert" class="alert-success">
+                ✓ Thank you! Your message has been sent successfully.
+            </div>
+
+            <form id="contactForm" onsubmit="sendMessage(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cName">Your Name</label>
+                        <input type="text" id="cName" placeholder="Enter your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cEmail">Your Email</label>
+                        <input type="email" id="cEmail" placeholder="Enter your email" required>
+                    </div>
+                </div>
+                <div class="form-group mb-12">
+                    <label for="cMessage">Message</label>
+                    <textarea id="cMessage" rows="3" placeholder="Write your message..." required></textarea>
+                </div>
+                <button type="submit" class="btn">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage(event) {
+            event.preventDefault();
+            const alertBox = document.getElementById("successAlert");
+            alertBox.style.display = "block";
+            document.getElementById("contactForm").reset();
+
+            setTimeout(() => {
+                alertBox.style.display = "none";
+            }, 4000);
+        }
+    </script>
+
+</body>
+</html>

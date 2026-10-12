@@ -11,19 +11,24 @@
 ## Repository Structure
 
 ```
-Module Project/
-├── Module - 1/
-│   └── Inventory Management System/     (Console-based Inventory & POS Billing)
+Mayank-SRM-Java-Practical/
+├── Module Project/
+│   ├── Module - 1/
+│   │   └── Inventory Management System/     (Console-based Inventory & POS Billing)
+│   │
+│   ├── Module - 2/
+│   │   ├── ThreadFileProcessing/            (Multi-Threaded CSV Processing Engine)
+│   │   └── calculator-executable-jar/       (Swing GUI Calculator Executable JAR)
+│   │
+│   └── Module - 3/
+│       ├── dependency-injection-ioc/        (Spring Core XML-based IoC & DI)
+│       ├── first-spring-app/                (Spring Core Annotation Context)
+│       ├── spring-mvc/                      (Spring Web MVC WAR Application)
+│       └── request-mapping-controller/      (Spring Boot REST Web Controller)
 │
-├── Module - 2/
-│   ├── ThreadFileProcessing/            (Multi-Threaded CSV Processing Engine)
-│   └── calculator-executable-jar/       (Swing GUI Calculator Executable JAR)
-│
-└── Module - 3/
-    ├── dependency-injection-ioc/        (Spring Core XML-based IoC & DI)
-    ├── first-spring-app/                (Spring Core Annotation Context)
-    ├── spring-mvc/                      (Spring Web MVC WAR Application)
-    └── request-mapping-controller/      (Spring Boot REST Web Controller)
+└── Assignment Project/
+    └── Assignment - 1/
+        └── spring-boot-web-project/         (Spring Boot 5-Page Static Website)
 ```
 
 ---
@@ -131,3 +136,26 @@ A modern Spring Boot application created with Spring Initializr (`start.spring.i
 cd "Module Project/Module - 3/request-mapping-controller"
 mvn spring-boot:run
 ```
+
+---
+
+## Assignment Documentation
+
+### Assignment - 1: Spring Boot Task - 5-Page Website
+A multi-page responsive web application built using **Spring Boot** and **Spring Web** with clean static page routing and modern styling.
+
+- **Objective**: Create a simple 5-page website using Spring Boot without requiring Thymeleaf, JPA, or a database.
+- **Pages**:
+  - `Home Page` (`http://localhost:8080/`): Welcome header, introduction, and global navigation menu.
+  - `Project Creator Page` (`http://localhost:8080/about.html`): Profile of the student developer with academic and skill credentials.
+  - `Product Page` (`http://localhost:8080/product.html`): Detailed application info, target audience, and tech stack.
+  - `Features Page` (`http://localhost:8080/features.html`): Checklist of system capabilities plus an interactive real-time student add/delete demo table.
+  - `Contact Page` (`http://localhost:8080/contact.html`): Student contact details and an interactive message submission form.
+- **Styling**: Structured external CSS (`style.css`) with responsive cards, navigation badges, and interactive table styling.
+
+**Run Command**:
+```bash
+cd "Assignment Project/Assignment - 1/spring-boot-web-project"
+.\mvnw spring-boot:run
+```
+
