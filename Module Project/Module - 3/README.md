@@ -1,79 +1,67 @@
 # Module - 3: Spring Framework & Spring Boot
 
-This module covers the progression from Spring Core IoC / Dependency Injection to Spring Web MVC and Spring Boot REST Controllers.
+**Student**: Mayank Upadhyay  
+**Course**: SRM-IST CSE Core Java Full Stack Practical  
 
-## Projects in this Module
+---
+
+## 📂 Module Structure
+
+This module contains the primary enterprise web mini-project alongside four supplementary projects covering foundational Spring Core, Spring MVC, and REST controllers.
 
 ```
 Module - 3/
-├── dependency-injection-ioc/        (XML-based Spring IoC Container)
-├── first-spring-app/                (Annotation-driven Spring Context)
-├── spring-mvc/                      (Spring Web MVC WAR Application)
-└── request-mapping-controller/      (Spring Boot REST Web API Application)
+├── employee-management-web/               <-- MAIN MODULE - 3 PROJECT
+│   ├── src/main/java/com/example/
+│   │   ├── security/ (SecurityConfig.java, JwtService.java)
+│   │   ├── controller/ (Login, Dashboard, Employee, Department)
+│   │   ├── model/ (Employee, Department, Role)
+│   │   └── service/ (EmployeeService, DepartmentService)
+│   ├── src/main/resources/
+│   │   ├── static/ (style.css)
+│   │   └── templates/ (login, dashboard, employees, employee-form, department)
+│   └── pom.xml
+└── Additional Projects/                   <-- SUPPLEMENTARY PRACTICAL PROJECTS
+    ├── dependency-injection-ioc/          (XML-based IoC Container & Bean Lifecycle)
+    ├── first-spring-app/                  (Annotation-driven Spring Core)
+    ├── request-mapping-controller/        (Spring Boot REST Web API)
+    └── spring-mvc/                        (Spring Web MVC with JSP views)
 ```
 
 ---
 
-### 1. `dependency-injection-ioc` (XML-based IoC & DI)
-Demonstrates classic Spring XML configuration (`applicationContext.xml`), loose coupling via interfaces, constructor injection, setter injection, bean lifecycle callbacks, and bean scopes.
+## 🌟 1. Main Project: `employee-management-web`
 
-- **Services**: `MessageService` with `EmailMessageService`, `SMSMessageService`, and `WhatsAppMessageService`.
-- **Injection Styles**: Both Setter and Constructor injection demonstrated side-by-side.
-- **Scopes**: Singleton (shared instance) vs Prototype (unique instance on every `getBean`).
-- **Lifecycle**: `init-method="init"` and `destroy-method="cleanup"` callbacks.
+**Employee Management System — Mini Project With Web Page**
+- **Architecture**: Spring Boot 3 + Spring MVC + Spring Security 6 + JJWT 0.12.6 + Thymeleaf.
+- **Storage**: In-memory `ArrayList` (`CopyOnWriteArrayList`) with synchronized department relationships.
+- **Security**: Custom form login (`/login`), role-based access control (`ROLE_ADMIN`, `ROLE_MANAGER`, `ROLE_USER`), and JWT token generation endpoint (`/api/auth/token`).
+- **Web UI**: Interactive Thymeleaf dashboard with live metrics, full Employee CRUD with filters, and Department management.
+- **Testing**: 14 automated unit and integration tests passing with 100% success rate.
 
-**How to Run**:
-```bash
-cd "Module Project/Module - 3/dependency-injection-ioc"
-mvn compile exec:java
-```
-
----
-
-### 2. `first-spring-app` (Annotation-Driven Spring Context)
-Demonstrates modern Spring annotation configuration without XML files using `@Configuration`, `@ComponentScan`, `@Service`, `@Component`, and `@Autowired`.
-
-- **Layered Architecture**: Demonstrates constructor autowiring across `PaymentGateway`, `OrderService`, and `MyService`.
-- **Container**: Bootstrapped via `AnnotationConfigApplicationContext`.
-
-**How to Run**:
-```bash
-cd "Module Project/Module - 3/first-spring-app"
-mvn compile exec:java
-```
-
----
-
-### 3. `spring-mvc` (Spring Web MVC Webapp)
-Demonstrates standard Spring Web MVC architecture packaged as a deployable WAR.
-
-- **Front Controller**: `DispatcherServlet` registered in `web.xml`.
-- **View Resolver**: `InternalResourceViewResolver` resolving JSP views under `/WEB-INF/views/`.
-- **Controller**: `CalculatorWebController` handling `@GetMapping("/calculator")` and `@PostMapping("/calculate")`.
-- **Packaging**: Packaged as deployable `target/spring-mvc.war`.
-
-**How to Build**:
-```bash
-cd "Module Project/Module - 3/spring-mvc"
-mvn clean package -DskipTests
-```
-
----
-
-### 4. `request-mapping-controller` (Spring Boot Web Controller)
-A modern Spring Boot application created with `start.spring.io` using the `Spring Web` dependency as demonstrated in class.
-
-- **Annotations**: `@SpringBootApplication`, `@RestController`, `@RequestMapping("/api/students")`.
-- **Endpoints**:
-  - `GET /api/students`: Retrieve list of all students.
-  - `GET /api/students/{id}`: Retrieve single student by ID (`@PathVariable`).
-  - `GET /api/students/search`: Filter students by department or name query parameter (`@RequestParam`).
-  - `POST /api/students`: Create new student entity (`@RequestBody`).
-  - `PUT /api/students/{id}`: Update student record.
-  - `DELETE /api/students/{id}`: Remove student record.
-
-**How to Run**:
-```bash
-cd "Module Project/Module - 3/request-mapping-controller"
+**Quick Run**:
+```powershell
+cd employee-management-web
 mvn spring-boot:run
 ```
+*Access via browser at `http://localhost:8080` (Default admin credentials: `admin` / `admin123`).*
+
+---
+
+## 📚 2. Additional Projects (`Additional Projects/`)
+
+### A. `dependency-injection-ioc`
+- Demonstrates Spring Core XML ApplicationContext (`applicationContext.xml`).
+- Setter injection, Constructor injection, and multiple notification service implementations (`EmailMessageService`, `SMSMessageService`, `WhatsAppMessageService`).
+- Singleton vs. Prototype bean scopes and lifecycle callbacks (`init-method`, `destroy-method`).
+
+### B. `first-spring-app`
+- Pure Java annotation-based Spring configuration (`@Configuration`, `@ComponentScan`).
+- Dependency injection using `@Autowired` across layered services with automated test coverage.
+
+### C. `request-mapping-controller`
+- Spring Boot RESTful Web API implementing `@RestController` and `@RequestMapping("/api/students")`.
+- Demonstrates full CRUD operations (`GET`, `POST`, `PUT`, `DELETE`) with query filtering.
+
+### D. `spring-mvc`
+- Traditional Spring Web MVC architecture using `DispatcherServlet`, XML web context (`spring-servlet.xml`, `web.xml`), `CalculatorWebController`, and dynamic JSP views.

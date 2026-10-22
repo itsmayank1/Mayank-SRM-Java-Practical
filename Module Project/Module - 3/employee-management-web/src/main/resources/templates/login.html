@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Employee Management System</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body class="login-wrapper">
+    <div class="login-card">
+        <div class="login-header">
+            <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🏢</div>
+            <h1>Employee Portal</h1>
+            <p>SRM-IST Full Stack Practical - Module 3</p>
+        </div>
+
+        <!-- Alerts -->
+        <div th:if="${errorMessage}" class="alert alert-danger">
+            <span th:text="${errorMessage}"></span>
+        </div>
+        <div th:if="${logoutMessage}" class="alert alert-success">
+            <span th:text="${logoutMessage}"></span>
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Enter username (e.g. admin)" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Enter password (e.g. admin123)" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">
+                Sign In to System
+            </button>
+        </form>
+
+        <div class="credentials-box">
+            <strong>Default Demo Credentials:</strong>
+            <div>• <b>Admin:</b> admin / admin123 (Full Access)</div>
+            <div>• <b>Manager:</b> manager / manager123 (Add & Edit)</div>
+            <div>• <b>Employee:</b> employee / employee123 (View Only)</div>
+        </div>
+    </div>
+</body>
+</html>

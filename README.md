@@ -21,10 +21,12 @@ Mayank-SRM-Java-Practical/
 │   │   └── calculator-executable-jar/       (Swing GUI Calculator Executable JAR)
 │   │
 │   └── Module - 3/
-│       ├── dependency-injection-ioc/        (Spring Core XML-based IoC & DI)
-│       ├── first-spring-app/                (Spring Core Annotation Context)
-│       ├── spring-mvc/                      (Spring Web MVC WAR Application)
-│       └── request-mapping-controller/      (Spring Boot REST Web Controller)
+│       ├── employee-management-web/         (MAIN PROJECT: Employee Management Web App)
+│       └── Additional Projects/             (Supplementary Spring Core & MVC Projects)
+│           ├── dependency-injection-ioc/    (Spring Core XML-based IoC & DI)
+│           ├── first-spring-app/            (Spring Core Annotation Context)
+│           ├── request-mapping-controller/  (Spring Boot REST Web Controller)
+│           └── spring-mvc/                  (Spring Web MVC WAR Application)
 │
 └── Assignment Project/
     └── Assignment - 1/
@@ -50,7 +52,6 @@ cd "Module Project/Module - 1/Inventory Management System"
 javac *.java
 java Main
 ```
-*(Or double-click `run.bat`)*
 
 ---
 
@@ -70,7 +71,6 @@ cd "Module Project/Module - 2/ThreadFileProcessing"
 javac -d out src\Main.java src\model\SalesRecord.java src\config\ProcessorConfig.java src\processor\CsvFileProcessor.java src\report\ReportAggregator.java
 java -cp out Main
 ```
-*(Or double-click `run.bat`)*
 
 #### 2. calculator-executable-jar (GUI Calculator)
 A Graphical User Interface (GUI) calculator built with Java Swing and packaged as a standalone executable JAR via `maven-jar-plugin:3.3.0`.
@@ -87,55 +87,52 @@ cd "Module Project/Module - 2/calculator-executable-jar"
 mvn clean package
 java -jar target/calculator-executable-jar-1.0-SNAPSHOT.jar
 ```
-*(Or double-click the `.jar` file in `target/`)*
 
 ---
 
 ### Module - 3: Spring Framework & Spring Boot
 
-#### 1. dependency-injection-ioc (XML-based IoC & DI)
-Demonstrates classic Spring XML configuration (`applicationContext.xml`), constructor injection, setter injection, bean lifecycle callbacks (`init` / `cleanup`), and singleton vs. prototype scopes.
+#### 🌟 Main Project: `employee-management-web`
+**Employee Management System — Mini Project With Web Page**
+- **Technologies**: Spring Boot 3.3.4, Spring MVC, Spring Security 6, Spring JWT (JJWT 0.12.6), Thymeleaf.
+- **Data Persistence**: In-memory `ArrayList` (`CopyOnWriteArrayList`) with synchronized department relationships.
+- **Security & JWT**: Custom login page (`/login`), role-based authorization (`ROLE_ADMIN`, `ROLE_MANAGER`, `ROLE_USER`), and REST JWT token generator (`/api/auth/token`).
+- **Web UI**: Interactive dashboard with payroll & department metrics, search/filter, and full CRUD.
 
 **Run Command**:
 ```bash
-cd "Module Project/Module - 3/dependency-injection-ioc"
-mvn compile exec:java
-```
-
-#### 2. first-spring-app (Annotation-Driven Spring Context)
-Demonstrates modern Spring annotation configuration without XML files using `@Configuration`, `@ComponentScan`, `@Service`, `@Component`, and `@Autowired` constructor injection across layered services.
-
-**Run Command**:
-```bash
-cd "Module Project/Module - 3/first-spring-app"
-mvn compile exec:java
-```
-
-#### 3. spring-mvc (Spring Web MVC)
-Demonstrates standard Spring Web MVC architecture with `DispatcherServlet`, `CalculatorWebController`, and interactive JSP views packaged into a deployable WAR.
-
-**Build Command**:
-```bash
-cd "Module Project/Module - 3/spring-mvc"
-mvn clean package -DskipTests
-```
-
-#### 4. request-mapping-controller (Spring Boot REST Web API)
-A modern Spring Boot application created with Spring Initializr (`start.spring.io`) using the `Spring Web` dependency.
-
-- **Endpoints**:
-  - `GET /api/students`: Retrieve all students.
-  - `GET /api/students/{id}`: Retrieve student by ID (`@PathVariable`).
-  - `GET /api/students/search`: Filter students by department or name query parameter (`@RequestParam`).
-  - `POST /api/students`: Create new student entity (`@RequestBody`).
-  - `PUT /api/students/{id}`: Update student record.
-  - `DELETE /api/students/{id}`: Remove student record.
-
-**Run Command**:
-```bash
-cd "Module Project/Module - 3/request-mapping-controller"
+cd "Module Project/Module - 3/employee-management-web"
 mvn spring-boot:run
 ```
+*Access via browser: `http://localhost:8080` (Default credentials: `admin` / `admin123`).*
+
+---
+
+#### 📚 Additional Projects (`Additional Projects/`)
+
+1. **`dependency-injection-ioc`**: Classic Spring XML configuration (`applicationContext.xml`), constructor/setter injection, bean lifecycle callbacks, and multiple messaging services.
+   ```bash
+   cd "Module Project/Module - 3/Additional Projects/dependency-injection-ioc"
+   mvn compile exec:java
+   ```
+
+2. **`first-spring-app`**: Annotation-driven Spring context using `@Configuration`, `@ComponentScan`, `@Service`, and `@Autowired`.
+   ```bash
+   cd "Module Project/Module - 3/Additional Projects/first-spring-app"
+   mvn compile exec:java
+   ```
+
+3. **`request-mapping-controller`**: Spring Boot RESTful Web API implementing `@RestController` and `@RequestMapping("/api/students")` with full CRUD operations.
+   ```bash
+   cd "Module Project/Module - 3/Additional Projects/request-mapping-controller"
+   mvn spring-boot:run
+   ```
+
+4. **`spring-mvc`**: Traditional Spring Web MVC architecture with `DispatcherServlet`, `CalculatorWebController`, and interactive JSP views packaged into a WAR.
+   ```bash
+   cd "Module Project/Module - 3/Additional Projects/spring-mvc"
+   mvn clean package -DskipTests
+   ```
 
 ---
 
@@ -144,18 +141,15 @@ mvn spring-boot:run
 ### Assignment - 1: Spring Boot Task - 5-Page Website
 A multi-page responsive web application built using **Spring Boot** and **Spring Web** with clean static page routing and modern styling.
 
-- **Objective**: Create a simple 5-page website using Spring Boot without requiring Thymeleaf, JPA, or a database.
 - **Pages**:
   - `Home Page` (`http://localhost:8080/`): Welcome header, introduction, and global navigation menu.
-  - `Project Creator Page` (`http://localhost:8080/about.html`): Profile of the student developer with academic and skill credentials.
-  - `Product Page` (`http://localhost:8080/product.html`): Detailed application info, target audience, and tech stack.
-  - `Features Page` (`http://localhost:8080/features.html`): Checklist of system capabilities plus an interactive real-time student add/delete demo table.
-  - `Contact Page` (`http://localhost:8080/contact.html`): Student contact details and an interactive message submission form.
-- **Styling**: Structured external CSS (`style.css`) with responsive cards, navigation badges, and interactive table styling.
+  - `Project Creator Page` (`http://localhost:8080/about.html`): Profile of the student developer.
+  - `Product Page` (`http://localhost:8080/product.html`): Application info, target audience, and tech stack.
+  - `Features Page` (`http://localhost:8080/features.html`): Checklist of capabilities and interactive demo table.
+  - `Contact Page` (`http://localhost:8080/contact.html`): Student contact details and feedback form.
 
 **Run Command**:
 ```bash
 cd "Assignment Project/Assignment - 1/spring-boot-web-project"
 .\mvnw spring-boot:run
 ```
-
