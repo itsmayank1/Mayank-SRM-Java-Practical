@@ -1,146 +1,183 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Directory - Employee Management System</title>
-    <link rel="stylesheet" th:href="@{/style.css}">
+    <title>Employees Directory - Employee Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <a th:href="@{/dashboard}" class="nav-brand">
-            <span>🏢</span>
-            <span>EMS Portal</span>
-            <span class="badge-tag">Module - 3</span>
-        </a>
-        <ul class="nav-links">
-            <li><a th:href="@{/dashboard}" class="nav-link">Dashboard</a></li>
-            <li><a th:href="@{/employees}" class="nav-link active">Employees</a></li>
-            <li><a th:href="@{/departments}" class="nav-link">Departments</a></li>
-        </ul>
-        <div class="nav-user">
-            <span class="user-badge">User: <strong sec:authentication="name">admin</strong></span>
-            <form th:action="@{/logout}" method="post" style="display: inline;">
-                <button type="submit" class="btn-logout">Logout</button>
-            </form>
+    <!-- Top Navigation -->
+    <nav>
+        <div class="nav-brand-group">
+            <span class="brand-icon">🏢</span>
+            <h2>Employee Management</h2>
+        </div>
+        <div class="nav-right">
+            <span class="role-badge" th:text="${role != null ? role : 'HR'}">HR</span>
+            <a href="/dashboard" class="nav-link">Dashboard</a>
+            <a href="/employees" class="nav-link active">Employees</a>
+            <a href="/departments" class="nav-link">Departments</a>
+            <a href="/logout" class="btn-logout">Logout</a>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="container">
+    <!-- Main Container -->
+    <div class="container">
         <!-- Page Header -->
         <div class="page-header">
-            <div class="page-title">
-                <h1>Employee Directory</h1>
-                <p>Manage, search, and update staff member profiles and departmental assignments.</p>
+            <div>
+                <h1>Employees Directory</h1>
+                <p class="subtitle">Search, paginate, sort, and manage workforce records across departments.</p>
             </div>
-            <div class="header-actions" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
-                <a th:href="@{/employees/new}" class="btn btn-primary">
-                    + Add New Employee
+            <div style="display: flex; gap: 0.75rem;">
+                <!-- Bonus Feature: CSV Export -->
+                <a href="/employees/export" class="btn btn-secondary" title="Download Roster as CSV">
+                    📥 Export CSV
+                </a>
+                <a th:if="${role == 'HR'}" href="/employees/new" class="btn btn-primary">
+                    + Add Employee
                 </a>
             </div>
         </div>
 
-        <!-- Alerts -->
-        <div th:if="${successMessage}" class="alert alert-success">
-            <span th:text="${successMessage}"></span>
-        </div>
-        <div th:if="${errorMessage}" class="alert alert-danger">
-            <span th:text="${errorMessage}"></span>
-        </div>
+        <!-- Flash Notifications -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-        <!-- Search & Filter Bar -->
-        <div class="search-filter-bar">
-            <form th:action="@{/employees}" method="get">
-                <input type="text" name="keyword" class="form-control" style="flex: 2; min-width: 220px;"
-                       placeholder="Search by name, email, designation..." th:value="${keyword}">
+        <!-- Search & Filter Controls -->
+        <div class="filter-panel">
+            <form th:action="@{/employees}" method="get" class="search-filter-form">
+                <input type="text" name="keyword" class="form-control"
+                       placeholder="🔍 Search by name, email, department, or title..."
+                       th:value="${keyword}">
 
-                <select name="deptId" class="form-control" style="flex: 1; min-width: 180px;">
+                <select name="deptId" class="form-control" style="max-width: 220px;">
                     <option value="">All Departments</option>
                     <option th:each="dept : ${departments}"
                             th:value="${dept.id}"
                             th:text="${dept.name}"
-                            th:selected="${selectedDeptId != null && selectedDeptId == dept.id}">
+                            th:selected="${selectedDeptId != null and selectedDeptId == dept.id}">
                     </option>
                 </select>
 
-                <button type="submit" class="btn btn-primary btn-sm">Search</button>
-                <a th:href="@{/employees}" class="btn btn-secondary btn-sm">Reset</a>
+                <input type="hidden" name="sortBy" th:value="${sortBy}">
+                <input type="hidden" name="direction" th:value="${direction}">
+
+                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                <a href="/employees" class="btn btn-secondary btn-sm">Reset</a>
             </form>
         </div>
 
-        <!-- Employee Table Card -->
-        <div class="card">
-            <div class="card-header">
-                <h3>All Employees (<span th:text="${employees.size()}">0</span>)</h3>
+        <!-- Employees Table Card -->
+        <div class="card" style="margin-top: 1.5rem;">
+            <div class="table-responsive">
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>
+                                <a th:href="@{/employees(page=0, size=5, sortBy='name', direction=${sortBy == 'name' and direction == 'asc' ? 'desc' : 'asc'}, keyword=${keyword}, deptId=${selectedDeptId})}"
+                                   class="sortable-header">
+                                    Name <span th:text="${sortBy == 'name' ? (direction == 'asc' ? '▲' : '▼') : '↕'}">↕</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a th:href="@{/employees(page=0, size=5, sortBy='email', direction=${sortBy == 'email' and direction == 'asc' ? 'desc' : 'asc'}, keyword=${keyword}, deptId=${selectedDeptId})}"
+                                   class="sortable-header">
+                                    Email <span th:text="${sortBy == 'email' ? (direction == 'asc' ? '▲' : '▼') : '↕'}">↕</span>
+                                </a>
+                            </th>
+                            <th>
+                                <a th:href="@{/employees(page=0, size=5, sortBy='salary', direction=${sortBy == 'salary' and direction == 'asc' ? 'desc' : 'asc'}, keyword=${keyword}, deptId=${selectedDeptId})}"
+                                   class="sortable-header">
+                                    Salary <span th:text="${sortBy == 'salary' ? (direction == 'asc' ? '▲' : '▼') : '↕'}">↕</span>
+                                </a>
+                            </th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${employees.empty}">
+                            <td colspan="7" style="text-align: center; padding: 2.5rem; color: #64748b;">
+                                No employee records found matching criteria.
+                            </td>
+                        </tr>
+                        <tr th:each="employee : ${employees}">
+                            <td><span class="id-tag" th:text="'#' + ${employee.id}">#1</span></td>
+                            <td>
+                                <strong th:text="${employee.name}">Mayank Upadhyay</strong>
+                                <div class="text-muted" style="font-size: 0.775rem;" th:text="${employee.designation}">Lead Architect</div>
+                            </td>
+                            <td th:text="${employee.email}">mayank@example.com</td>
+                            <td><strong th:text="'₹' + ${#numbers.formatDecimal(employee.salary, 1, 'COMMA', 2, 'POINT')}">₹125,000.00</strong></td>
+                            <td>
+                                <span class="badge badge-dept"
+                                      th:text="${employee.department != null ? employee.department.name : 'Unassigned'}">IT</span>
+                            </td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${employee.status == 'Active' ? 'badge-green' : 'badge-amber'}"
+                                      th:text="${employee.status}">Active</span>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <a th:if="${role == 'HR' or role == 'MANAGER'}"
+                                       th:href="@{/employees/edit/{id}(id=${employee.id})}"
+                                       class="btn-action edit" title="Edit Employee">
+                                        ✏️ Edit
+                                    </a>
+                                    <a th:if="${role == 'HR'}"
+                                       th:href="@{/employees/delete/{id}(id=${employee.id})}"
+                                       class="btn-action delete"
+                                       onclick="return confirm('Delete this employee?')" title="Delete Employee">
+                                        🗑️ Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="card-body" style="padding: 0;">
-                <div class="table-responsive">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Employee</th>
-                                <th>Department</th>
-                                <th>Designation</th>
-                                <th>Salary</th>
-                                <th>Role</th>
-                                <th>Joined</th>
-                                <th>Status</th>
-                                <th sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:if="${employees.empty}">
-                                <td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">
-                                    No employees found matching the specified filters.
-                                </td>
-                            </tr>
-                            <tr th:each="emp : ${employees}">
-                                <td><strong th:text="'#' + ${emp.id}">#101</strong></td>
-                                <td>
-                                    <div><strong th:text="${emp.fullName}">Mayank Upadhyay</strong></div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);" th:text="${emp.email}">mayank@example.com</div>
-                                </td>
-                                <td>
-                                    <span class="badge badge-dept" th:text="${emp.departmentName}">Software Engineering</span>
-                                </td>
-                                <td th:text="${emp.designation}">Senior Full Stack Engineer</td>
-                                <td><strong th:text="'₹' + ${#numbers.formatDecimal(emp.salary, 1, 'COMMA', 2, 'POINT')}">₹125,000.00</strong></td>
-                                <td>
-                                    <span class="badge badge-role" th:text="${emp.role}">ROLE_ADMIN</span>
-                                </td>
-                                <td th:text="${emp.joiningDate}">2023-01-15</td>
-                                <td>
-                                    <span class="badge"
-                                          th:classappend="${emp.status == 'Active' ? 'badge-active' : 'badge-leave'}"
-                                          th:text="${emp.status}">Active</span>
-                                </td>
-                                <td sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
-                                    <div style="display: flex; gap: 0.4rem;">
-                                        <a th:href="@{'/employees/edit/' + ${emp.id}}" class="btn btn-secondary btn-sm" title="Edit">
-                                            ✏️ Edit
-                                        </a>
-                                        <a th:href="@{'/employees/delete/' + ${emp.id}}"
-                                           sec:authorize="hasRole('ADMIN')"
-                                           class="btn btn-danger btn-sm"
-                                           onclick="return confirm('Are you sure you want to delete this employee?');"
-                                           title="Delete">
-                                            🗑️
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+
+            <!-- Sorting Toolbar -->
+            <div class="sorting-toolbar">
+                <span class="sort-label">Quick Sort:</span>
+                <a th:href="@{/employees(page=0, size=5, sortBy='name', direction='asc', keyword=${keyword}, deptId=${selectedDeptId})}" class="sort-chip">Name ↑</a>
+                <a th:href="@{/employees(page=0, size=5, sortBy='name', direction='desc', keyword=${keyword}, deptId=${selectedDeptId})}" class="sort-chip">Name ↓</a>
+                <a th:href="@{/employees(page=0, size=5, sortBy='salary', direction='asc', keyword=${keyword}, deptId=${selectedDeptId})}" class="sort-chip">Salary ↑</a>
+                <a th:href="@{/employees(page=0, size=5, sortBy='salary', direction='desc', keyword=${keyword}, deptId=${selectedDeptId})}" class="sort-chip">Salary ↓</a>
+                <a th:href="@{/employees(page=0, size=5, sortBy='email', direction='asc', keyword=${keyword}, deptId=${selectedDeptId})}" class="sort-chip">Email ↑</a>
+                <a th:href="@{/employees(page=0, size=5, sortBy='email', direction='desc', keyword=${keyword}, deptId=${selectedDeptId})}" class="sort-chip">Email ↓</a>
+            </div>
+
+            <!-- Pagination Toolbar -->
+            <div class="pagination">
+                <a th:if="${currentPage > 0}"
+                   th:href="@{/employees(page=${currentPage - 1}, size=5, sortBy=${sortBy}, direction=${direction}, keyword=${keyword}, deptId=${selectedDeptId})}"
+                   class="page-btn">
+                    ← Previous
+                </a>
+                <span th:if="${currentPage <= 0}" class="page-btn disabled">← Previous</span>
+
+                <span class="page-indicator">
+                    Page <b th:text="${currentPage + 1}">1</b> of <b th:text="${totalPages}">1</b>
+                </span>
+
+                <a th:if="${currentPage + 1 < totalPages}"
+                   th:href="@{/employees(page=${currentPage + 1}, size=5, sortBy=${sortBy}, direction=${direction}, keyword=${keyword}, deptId=${selectedDeptId})}"
+                   class="page-btn">
+                    Next →
+                </a>
+                <span th:if="${currentPage + 1 >= totalPages}" class="page-btn disabled">Next →</span>
             </div>
         </div>
-    </main>
+    </div>
 
     <footer>
-        <p>© 2026 SRM-IST Java Full Stack Practical — Employee Management System (Module - 3)</p>
+        <p>© 2026 SRM-IST Java Full Stack Practical • Module - 3: Employee Management System</p>
     </footer>
 </body>
 </html>

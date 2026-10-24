@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,33 +27,41 @@ class EmployeeServiceTest {
     void testInitialDataSeededInArrayList() {
         List<Employee> allEmployees = employeeService.getAllEmployees();
         assertFalse(allEmployees.isEmpty());
-        assertTrue(allEmployees.size() >= 6);
+        assertTrue(allEmployees.size() >= 7);
     }
 
     @Test
     void testDepartmentRelationshipAndSync() {
-        List<Department> departments = departmentService.getAllDepartments();
+        List<Department> departments = departmentService.getAll();
         assertFalse(departments.isEmpty());
 
-        Optional<Department> engDept = departments.stream()
-                .filter(d -> "ENG".equals(d.getCode()))
-                .findFirst();
-        assertTrue(engDept.isPresent());
-        assertTrue(engDept.get().getEmployeeCount() > 0);
+        Department itDept = departmentService.getById(1L);
+        assertNotNull(itDept);
+        assertTrue(itDept.getEmployeeCount() > 0);
     }
 
     @Test
     void testCreateAndReadEmployee() {
-        Employee newEmp = new Employee(null, "Anil", "Kumar", "anil.k@example.com", "9123456789",
-                "QA Engineer", 75000.0, 1L, null, "ROLE_EMPLOYEE", "2024-04-01", "Active");
+        Department hrDept = departmentService.getById(2L);
+        Employee newEmp = new Employee(null, "Anil Kumar", "anil.k@example.com", 75000.0, hrDept);
 
-        Employee saved = employeeService.saveEmployee(newEmp);
+        Employee saved = employeeService.create(newEmp);
         assertNotNull(saved.getId());
-        assertEquals("Software Engineering", saved.getDepartmentName());
+        assertEquals("HR", saved.getDepartment().getName());
 
-        Optional<Employee> fetched = employeeService.getEmployeeById(saved.getId());
-        assertTrue(fetched.isPresent());
-        assertEquals("Anil Kumar", fetched.get().getFullName());
+        Employee fetched = employeeService.getById(saved.getId());
+        assertNotNull(fetched);
+        assertEquals("Anil Kumar", fetched.getName());
+    }
+
+    @Test
+    void testPaginationAndSorting() {
+        List<Employee> page0 = employeeService.getEmployees(0, 3, "salary", "desc");
+        assertEquals(3, page0.size());
+        assertTrue(page0.get(0).getSalary() >= page0.get(1).getSalary());
+
+        int totalPages = employeeService.getTotalPages(3);
+        assertTrue(totalPages >= 3);
     }
 
     @Test
@@ -64,43 +71,31 @@ class EmployeeServiceTest {
 
         emp.setSalary(150000.0);
         emp.setStatus("On Leave");
-        employeeService.saveEmployee(emp);
+        employeeService.update(id, emp);
 
-        Optional<Employee> updated = employeeService.getEmployeeById(id);
-        assertTrue(updated.isPresent());
-        assertEquals(150000.0, updated.get().getSalary());
-        assertEquals("On Leave", updated.get().getStatus());
+        Employee updated = employeeService.getById(id);
+        assertNotNull(updated);
+        assertEquals(150000.0, updated.getSalary());
+        assertEquals("On Leave", updated.getStatus());
     }
 
     @Test
     void testDeleteEmployee() {
-        Employee newEmp = new Employee(null, "Temp", "User", "temp@example.com", "0000000000",
-                "Intern", 30000.0, 2L, null, "ROLE_EMPLOYEE", "2024-05-01", "Active");
-        Employee saved = employeeService.saveEmployee(newEmp);
+        Department it = departmentService.getById(1L);
+        Employee newEmp = new Employee(null, "Temp User", "temp@example.com", 30000.0, it);
+        Employee saved = employeeService.create(newEmp);
         Long id = saved.getId();
 
-        boolean deleted = employeeService.deleteEmployee(id);
+        boolean deleted = employeeService.delete(id);
         assertTrue(deleted);
-        assertFalse(employeeService.getEmployeeById(id).isPresent());
+        assertNull(employeeService.getById(id));
     }
 
     @Test
-    void testSearchEmployees() {
-        List<Employee> results = employeeService.searchEmployees("Mayank", null);
-        assertFalse(results.isEmpty());
-        assertEquals("Mayank Upadhyay", results.get(0).getFullName());
-
-        List<Employee> deptResults = employeeService.searchEmployees(null, 1L);
-        assertFalse(deptResults.isEmpty());
-        for (Employee e : deptResults) {
-            assertEquals(1L, e.getDepartmentId());
-        }
-    }
-
-    @Test
-    void testDashboardAnalytics() {
-        assertTrue(employeeService.getTotalEmployees() > 0);
-        assertTrue(employeeService.getTotalPayroll() > 0);
-        assertTrue(employeeService.getAverageSalary() > 0);
+    void testCsvExportGeneration() {
+        String csv = employeeService.generateCsvContent();
+        assertNotNull(csv);
+        assertTrue(csv.contains("Mayank Upadhyay"));
+        assertTrue(csv.contains("ID,Name,Email,Department"));
     }
 }

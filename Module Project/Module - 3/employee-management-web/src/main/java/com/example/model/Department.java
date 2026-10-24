@@ -11,6 +11,15 @@ public class Department {
     public Department() {
     }
 
+    public Department(Long id, String name) {
+        this.id = id;
+        this.name = name;
+        this.code = (name != null && name.length() >= 2) ? name.substring(0, Math.min(3, name.length())).toUpperCase() : "GEN";
+        this.location = "Main Campus - Block A";
+        this.headOfDepartment = "Department Lead";
+        this.employeeCount = 0;
+    }
+
     public Department(Long id, String name, String code, String location, String headOfDepartment) {
         this.id = id;
         this.name = name;
@@ -70,13 +79,6 @@ public class Department {
 
     @Override
     public String toString() {
-        return "Department{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", code='" + code + '\'' +
-                ", location='" + location + '\'' +
-                ", headOfDepartment='" + headOfDepartment + '\'' +
-                ", employeeCount=" + employeeCount +
-                '}';
+        return name;
     }
 }

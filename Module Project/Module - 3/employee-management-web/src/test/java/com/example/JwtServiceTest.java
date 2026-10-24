@@ -14,23 +14,22 @@ class JwtServiceTest {
     @BeforeEach
     void setUp() {
         jwtService = new JwtService();
-        // Set test secret key and expiration using ReflectionTestUtils
-        ReflectionTestUtils.setField(jwtService, "secretKey",
-                "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970");
-        ReflectionTestUtils.setField(jwtService, "jwtExpirationMs", 3600000L); // 1 hour
+        ReflectionTestUtils.setField(jwtService, "secret",
+                "MyVeryLongSecretKeyWebApplicationInSpringBoot123456789");
+        ReflectionTestUtils.setField(jwtService, "expiration", 3600000L);
     }
 
     @Test
     void testGenerateAndValidateToken() {
-        String username = "admin";
-        String role = "ROLE_ADMIN";
+        String username = "hr";
+        String role = "HR";
 
         String token = jwtService.generateToken(username, role);
         assertNotNull(token);
         assertFalse(token.isEmpty());
 
-        assertEquals(username, jwtService.extractUsername(token));
-        assertEquals(role, jwtService.extractRole(token));
+        assertEquals(username, jwtService.getUsername(token));
+        assertEquals(role, jwtService.getRole(token));
         assertTrue(jwtService.validateToken(token, username));
         assertFalse(jwtService.validateToken(token, "otheruser"));
         assertFalse(jwtService.isTokenExpired(token));

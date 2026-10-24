@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departments - Employee Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav>
+        <div class="nav-brand-group">
+            <span class="brand-icon">🏢</span>
+            <h2>Employee Management</h2>
+        </div>
+        <div class="nav-right">
+            <span class="role-badge" th:text="${role != null ? role : 'HR'}">HR</span>
+            <a href="/dashboard" class="nav-link">Dashboard</a>
+            <a href="/employees" class="nav-link">Employees</a>
+            <a href="/departments" class="nav-link active">Departments</a>
+            <a href="/logout" class="btn-logout">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>Departments Management</h1>
+                <p class="subtitle">Organizational business units, head of departments, and office locations.</p>
+            </div>
+            <div>
+                <a href="/employees" class="btn btn-secondary btn-sm">View Employees Directory →</a>
+            </div>
+        </div>
+
+        <!-- Flash Notifications -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <!-- Add Department Form for HR -->
+        <div th:if="${role == 'HR'}" class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <h3 style="margin-bottom: 1rem; color: #0f172a;">+ Add New Department</h3>
+            <form th:action="@{/departments/save}" method="post" class="inline-dept-form">
+                <input type="text" name="name" class="form-control"
+                       placeholder="Department Name (e.g. Cybersecurity)" required style="flex: 2;">
+
+                <input type="text" name="code" class="form-control"
+                       placeholder="Code (e.g. SEC)" style="max-width: 140px; text-transform: uppercase;">
+
+                <input type="text" name="location" class="form-control"
+                       placeholder="Office Location" style="flex: 1.5;">
+
+                <input type="text" name="headOfDepartment" class="form-control"
+                       placeholder="Head of Department" style="flex: 1.5;">
+
+                <button type="submit" class="btn btn-primary" style="white-space: nowrap;">
+                    Add Department
+                </button>
+            </form>
+        </div>
+
+        <!-- Department Table Card -->
+        <div class="card">
+            <div class="table-responsive">
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Code</th>
+                            <th>Department Name</th>
+                            <th>Location</th>
+                            <th>Head of Dept</th>
+                            <th>Staff Count</th>
+                            <th th:if="${role == 'HR'}">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${departments.empty}">
+                            <td colspan="7" style="text-align: center; padding: 2rem; color: #64748b;">
+                                No departments configured yet.
+                            </td>
+                        </tr>
+                        <tr th:each="department : ${departments}">
+                            <td><strong th:text="'#' + ${department.id}">#1</strong></td>
+                            <td><span class="badge badge-dept" th:text="${department.code}">IT</span></td>
+                            <td><strong th:text="${department.name}">Information Technology</strong></td>
+                            <td th:text="${department.location}">Tech Tower - Floor 4</td>
+                            <td th:text="${department.headOfDepartment}">Dr. Rajesh Sharma</td>
+                            <td>
+                                <a th:href="@{'/employees?deptId=' + ${department.id}}"
+                                   class="badge badge-link"
+                                   th:text="${department.employeeCount} + ' Members'">3 Members</a>
+                            </td>
+                            <td th:if="${role == 'HR'}">
+                                <a th:href="@{'/departments/delete/' + ${department.id}}"
+                                   class="btn-action delete"
+                                   onclick="return confirm('Delete this department?')">
+                                    🗑️ Delete
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 SRM-IST Java Full Stack Practical • Module - 3: Employee Management System</p>
+    </footer>
+</body>
+</html>

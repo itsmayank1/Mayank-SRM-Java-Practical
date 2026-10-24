@@ -2,36 +2,44 @@ package com.example.model;
 
 public class Employee {
     private Long id;
-    private String firstName;
-    private String lastName;
+    private String name;
     private String email;
+    private double salary;
+    private Department department;
     private String phone;
     private String designation;
-    private Double salary;
-    private Long departmentId;
-    private String departmentName;
-    private String role;
+    private Role role;
     private String joiningDate;
     private String status;
 
     public Employee() {
         this.status = "Active";
-        this.role = "ROLE_EMPLOYEE";
+        this.role = Role.EMPLOYEE;
     }
 
-    public Employee(Long id, String firstName, String lastName, String email, String phone,
-                    String designation, Double salary, Long departmentId, String departmentName,
-                    String role, String joiningDate, String status) {
+    public Employee(Long id, String name, String email, double salary, Department department) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.name = name;
         this.email = email;
+        this.salary = salary;
+        this.department = department;
+        this.phone = "9876543210";
+        this.designation = "Associate";
+        this.role = Role.EMPLOYEE;
+        this.joiningDate = "2024-01-15";
+        this.status = "Active";
+    }
+
+    public Employee(Long id, String name, String email, double salary, Department department,
+                    String phone, String designation, Role role, String joiningDate, String status) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.salary = salary;
+        this.department = department;
         this.phone = phone;
         this.designation = designation;
-        this.salary = salary;
-        this.departmentId = departmentId;
-        this.departmentName = departmentName;
-        this.role = role;
+        this.role = role != null ? role : Role.EMPLOYEE;
         this.joiningDate = joiningDate;
         this.status = (status != null && !status.isBlank()) ? status : "Active";
     }
@@ -44,27 +52,16 @@ public class Employee {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getFullName() {
-        if (firstName == null && lastName == null) return "";
-        if (firstName == null) return lastName;
-        if (lastName == null) return firstName;
-        return firstName + " " + lastName;
+        return name;
     }
 
     public String getEmail() {
@@ -73,6 +70,30 @@ public class Employee {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public Long getDepartmentId() {
+        return department != null ? department.getId() : null;
+    }
+
+    public String getDepartmentName() {
+        return department != null ? department.getName() : "Unassigned";
     }
 
     public String getPhone() {
@@ -91,35 +112,11 @@ public class Employee {
         this.designation = designation;
     }
 
-    public Double getSalary() {
-        return salary;
-    }
-
-    public void setSalary(Double salary) {
-        this.salary = salary;
-    }
-
-    public Long getDepartmentId() {
-        return departmentId;
-    }
-
-    public void setDepartmentId(Long departmentId) {
-        this.departmentId = departmentId;
-    }
-
-    public String getDepartmentName() {
-        return departmentName;
-    }
-
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
-    }
-
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -143,12 +140,11 @@ public class Employee {
     public String toString() {
         return "Employee{" +
                 "id=" + id +
-                ", name='" + getFullName() + '\'' +
+                ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", designation='" + designation + '\'' +
-                ", departmentName='" + departmentName + '\'' +
                 ", salary=" + salary +
-                ", status='" + status + '\'' +
+                ", department=" + (department != null ? department.getName() : "None") +
+                ", role=" + role +
                 '}';
     }
 }

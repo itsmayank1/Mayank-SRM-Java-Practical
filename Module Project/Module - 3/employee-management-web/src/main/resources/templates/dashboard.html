@@ -1,160 +1,167 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Employee Management System</title>
-    <link rel="stylesheet" th:href="@{/style.css}">
+    <title>Dashboard - Employee Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <a th:href="@{/dashboard}" class="nav-brand">
-            <span>🏢</span>
-            <span>EMS Portal</span>
+    <!-- Top Navigation -->
+    <nav>
+        <div class="nav-brand-group">
+            <span class="brand-icon">🏢</span>
+            <h2>Employee Management</h2>
             <span class="badge-tag">Module - 3</span>
-        </a>
-        <ul class="nav-links">
-            <li><a th:href="@{/dashboard}" class="nav-link active">Dashboard</a></li>
-            <li><a th:href="@{/employees}" class="nav-link">Employees</a></li>
-            <li><a th:href="@{/departments}" class="nav-link">Departments</a></li>
-        </ul>
-        <div class="nav-user">
-            <span class="user-badge">User: <strong th:text="${username}">admin</strong></span>
-            <form th:action="@{/logout}" method="post" style="display: inline;">
-                <button type="submit" class="btn-logout">Logout</button>
-            </form>
+        </div>
+        <div class="nav-right">
+            <span>Welcome, <strong th:text="${username != null ? username : 'User'}">User</strong></span>
+            <span class="role-badge" th:text="${role != null ? role : 'HR'}">HR</span>
+            <a href="/employees" class="nav-link">Employees</a>
+            <a href="/departments" class="nav-link">Departments</a>
+            <a href="/logout" class="btn-logout">Logout</a>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="container">
-        <!-- Page Header -->
+    <!-- Main Dashboard Container -->
+    <div class="container">
         <div class="page-header">
-            <div class="page-title">
-                <h1>Overview Dashboard</h1>
-                <p>Welcome back, <span th:text="${username}">User</span>! Here is the latest summary of your organization.</p>
+            <div>
+                <h1>Executive Dashboard</h1>
+                <p class="subtitle">Real-time organizational analytics and workforce directory overview.</p>
             </div>
-            <div class="header-actions">
-                <a th:href="@{/employees/new}" class="btn btn-primary" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
-                    + Add New Employee
-                </a>
+            <div th:if="${role == 'HR'}">
+                <a href="/employees/new" class="btn btn-primary">+ Add New Employee</a>
             </div>
         </div>
 
-        <!-- Metric Cards -->
+        <!-- Metric KPI Cards -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-info">
-                    <div class="stat-label">Total Employees</div>
-                    <div class="stat-value" th:text="${totalEmployees}">6</div>
+                    <span class="stat-label">Total Employees</span>
+                    <h3 class="stat-value" th:text="${totalEmployees}">7</h3>
                 </div>
-                <div class="stat-icon">👥</div>
+                <div class="stat-icon bg-blue">👥</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-info">
-                    <div class="stat-label">Active Staff</div>
-                    <div class="stat-value" th:text="${activeEmployees}">5</div>
+                    <span class="stat-label">Active Staff</span>
+                    <h3 class="stat-value" th:text="${activeEmployees}">6</h3>
                 </div>
-                <div class="stat-icon" style="background-color: var(--success-light); color: var(--success);">✅</div>
+                <div class="stat-icon bg-green">✅</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-info">
-                    <div class="stat-label">Departments</div>
-                    <div class="stat-value" th:text="${totalDepartments}">4</div>
+                    <span class="stat-label">Departments</span>
+                    <h3 class="stat-value" th:text="${totalDepartments}">4</h3>
                 </div>
-                <div class="stat-icon" style="background-color: #f3e8ff; color: #7c3aed;">🏛️</div>
+                <div class="stat-icon bg-purple">🏛️</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-info">
-                    <div class="stat-label">Monthly Payroll</div>
-                    <div class="stat-value" style="font-size: 1.45rem;" th:text="${totalPayroll}">₹6,10,000.00</div>
+                    <span class="stat-label">Total Payroll</span>
+                    <h3 class="stat-value" style="font-size: 1.5rem;" th:text="${totalPayroll}">₹6,98,000.00</h3>
                 </div>
-                <div class="stat-icon" style="background-color: var(--warning-light); color: var(--warning);">💼</div>
+                <div class="stat-icon bg-amber">💼</div>
             </div>
         </div>
 
-        <!-- 2 Column Section -->
-        <div class="two-col-grid">
-            <!-- Left: Department Breakdown -->
+        <!-- Module Navigation Quick Cards -->
+        <div class="cards-quick-nav">
+            <a href="/employees" class="nav-card">
+                <div class="nav-card-icon">📋</div>
+                <div>
+                    <h3>Employees Directory</h3>
+                    <p>Search, filter, paginate, sort, and manage staff records.</p>
+                </div>
+                <span class="nav-card-arrow">→</span>
+            </a>
+
+            <a href="/departments" class="nav-card">
+                <div class="nav-card-icon">🏢</div>
+                <div>
+                    <h3>Departments</h3>
+                    <p>View organizational units, locations, heads, and team distribution.</p>
+                </div>
+                <span class="nav-card-arrow">→</span>
+            </a>
+        </div>
+
+        <!-- Two Column Detailed Section -->
+        <div class="two-col-grid" style="margin-top: 2rem;">
+            <!-- Department Distribution -->
             <div class="card">
                 <div class="card-header">
-                    <h3>Department Directory</h3>
-                    <a th:href="@{/departments}" class="btn btn-secondary btn-sm">Manage All</a>
+                    <h3>Department Breakdown</h3>
+                    <a href="/departments" class="btn-text">View All →</a>
                 </div>
-                <div class="card-body" style="padding: 0;">
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Code</th>
-                                    <th>Department</th>
-                                    <th>Head of Dept</th>
-                                    <th>Team Size</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="dept : ${departments}">
-                                    <td><span class="badge badge-dept" th:text="${dept.code}">ENG</span></td>
-                                    <td><strong th:text="${dept.name}">Software Engineering</strong></td>
-                                    <td th:text="${dept.headOfDepartment}">Dr. Rajesh Sharma</td>
-                                    <td>
-                                        <span class="badge" style="background: #e2e8f0; color: #334155;"
-                                              th:text="${dept.employeeCount} + ' Members'">3 Members</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="table-responsive">
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Department</th>
+                                <th>Head of Dept</th>
+                                <th>Location</th>
+                                <th>Team Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="dept : ${departments}">
+                                <td><strong th:text="${dept.name}">IT</strong></td>
+                                <td th:text="${dept.headOfDepartment}">Dr. Rajesh Sharma</td>
+                                <td th:text="${dept.location}">Tech Tower</td>
+                                <td>
+                                    <span class="badge badge-dept" th:text="${dept.employeeCount} + ' Members'">3 Members</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- Right: Recent Employees -->
+            <!-- Recent Team Members -->
             <div class="card">
                 <div class="card-header">
                     <h3>Recent Team Members</h3>
-                    <a th:href="@{/employees}" class="btn btn-secondary btn-sm">View Directory</a>
+                    <a href="/employees" class="btn-text">Manage →</a>
                 </div>
-                <div class="card-body" style="padding: 0;">
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Employee</th>
-                                    <th>Department</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="emp : ${recentEmployees}">
-                                    <td>
-                                        <div><strong th:text="${emp.fullName}">Mayank Upadhyay</strong></div>
-                                        <div style="font-size: 0.8rem; color: var(--text-muted);" th:text="${emp.designation}">Lead Architect</div>
-                                    </td>
-                                    <td th:text="${emp.departmentName}">Software Engineering</td>
-                                    <td>
-                                        <span class="badge badge-role" th:text="${emp.role}">ROLE_ADMIN</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge"
-                                              th:classappend="${emp.status == 'Active' ? 'badge-active' : 'badge-leave'}"
-                                              th:text="${emp.status}">Active</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="table-responsive">
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Designation</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="emp : ${recentEmployees}">
+                                <td>
+                                    <strong th:text="${emp.name}">Mayank Upadhyay</strong>
+                                    <div class="text-muted" style="font-size: 0.8rem;" th:text="${emp.email}">mayank@example.com</div>
+                                </td>
+                                <td th:text="${emp.department != null ? emp.department.name : 'Unassigned'}">IT</td>
+                                <td th:text="${emp.designation}">Lead Architect</td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${emp.status == 'Active' ? 'badge-green' : 'badge-amber'}"
+                                          th:text="${emp.status}">Active</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
     <footer>
-        <p>© 2026 SRM-IST Java Full Stack Practical — Employee Management System (Module - 3)</p>
+        <p>© 2026 SRM-IST Java Full Stack Practical • Module - 3: Employee Management System</p>
     </footer>
 </body>
 </html>

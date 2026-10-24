@@ -16,43 +16,42 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}")
-    private String secretKey;
+    @Value("${app.jwt.secret:MyVeryLongSecretKeyWebApplicationInSpringBoot123456789}")
+    private String secret;
 
-    @Value("${jwt.expiration:86400000}")
-    private long jwtExpirationMs;
+    @Value("${app.jwt.expiration:3600000}")
+    private long expiration;
 
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
-        return Keys.hmacShaKeyFor(keyBytes);
+    private SecretKey getKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(String username, String role) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("role", role);
-        return createToken(claims, username);
-    }
-
-    private String createToken(Map<String, Object> claims, String subject) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
-
         return Jwts.builder()
-                .claims(claims)
-                .subject(subject)
-                .issuedAt(now)
-                .expiration(expiryDate)
-                .signWith(getSigningKey())
+                .subject(username)
+                .claim("role", role)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getKey())
                 .compact();
     }
 
-    public String extractUsername(String token) {
+    // Teacher compatibility methods
+    public String getUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public String getRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
+    }
+
+    // Extended security verification methods
+    public String extractUsername(String token) {
+        return getUsername(token);
+    }
+
     public String extractRole(String token) {
-        Claims claims = extractAllClaims(token);
-        return (String) claims.get("role");
+        return getRole(token);
     }
 
     public Date extractExpiration(String token) {
@@ -66,7 +65,7 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(getSigningKey())
+                .verifyWith(getKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
@@ -82,7 +81,7 @@ public class JwtService {
 
     public boolean validateToken(String token, String username) {
         try {
-            final String extractedUsername = extractUsername(token);
+            final String extractedUsername = getUsername(token);
             return (extractedUsername.equals(username) && !isTokenExpired(token));
         } catch (Exception e) {
             return false;

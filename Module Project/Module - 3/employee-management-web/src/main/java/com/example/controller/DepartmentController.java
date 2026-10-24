@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.model.Department;
 import com.example.service.DepartmentService;
 import com.example.service.EmployeeService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
+@RequestMapping("/departments")
 public class DepartmentController {
 
     private final DepartmentService departmentService;
@@ -22,30 +24,64 @@ public class DepartmentController {
         this.employeeService = employeeService;
     }
 
-    // Web Views
-    @GetMapping("/departments")
-    public String viewDepartments(Model model) {
+    @GetMapping
+    public String departments(Model model, HttpSession session) {
         employeeService.syncDepartmentCounts();
-        model.addAttribute("departments", departmentService.getAllDepartments());
+        Object roleObj = session.getAttribute("role");
+        String role = roleObj != null ? roleObj.toString() : "HR";
+
+        model.addAttribute("departments", departmentService.getAll());
+        model.addAttribute("role", role);
         model.addAttribute("newDepartment", new Department());
-        return "department";
+        return "departments";
     }
 
-    @PostMapping("/departments/save")
-    public String saveDepartment(@ModelAttribute("newDepartment") Department department,
-                                 RedirectAttributes redirectAttributes) {
-        departmentService.saveDepartment(department);
-        employeeService.syncDepartmentCounts();
-        redirectAttributes.addFlashAttribute("successMessage",
-                "Department '" + department.getName() + "' saved successfully!");
+    @PostMapping("/save")
+    public String save(@RequestParam(value = "name", required = false) String name,
+                       @ModelAttribute("newDepartment") Department departmentForm,
+                       HttpSession session,
+                       RedirectAttributes redirectAttributes) {
+
+        String role = (String) session.getAttribute("role");
+        if (role != null && !"HR".equalsIgnoreCase(role)) {
+            return "redirect:/departments";
+        }
+
+        String deptName = (departmentForm != null && departmentForm.getName() != null && !departmentForm.getName().isBlank())
+                ? departmentForm.getName()
+                : name;
+
+        if (deptName != null && !deptName.isBlank()) {
+            Department dept = new Department(null, deptName);
+            if (departmentForm != null) {
+                if (departmentForm.getCode() != null && !departmentForm.getCode().isBlank()) {
+                    dept.setCode(departmentForm.getCode().toUpperCase());
+                }
+                if (departmentForm.getLocation() != null && !departmentForm.getLocation().isBlank()) {
+                    dept.setLocation(departmentForm.getLocation());
+                }
+                if (departmentForm.getHeadOfDepartment() != null && !departmentForm.getHeadOfDepartment().isBlank()) {
+                    dept.setHeadOfDepartment(departmentForm.getHeadOfDepartment());
+                }
+            }
+            departmentService.create(dept);
+            employeeService.syncDepartmentCounts();
+            redirectAttributes.addFlashAttribute("successMessage", "Department '" + deptName + "' added successfully!");
+        }
+
         return "redirect:/departments";
     }
 
-    @GetMapping("/departments/delete/{id}")
-    public String deleteDepartment(@PathVariable("id") Long id,
-                                   RedirectAttributes redirectAttributes) {
-        boolean deleted = departmentService.deleteDepartment(id);
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
+        String role = (String) session.getAttribute("role");
+        if (role != null && !"HR".equalsIgnoreCase(role)) {
+            return "redirect:/departments";
+        }
+
+        boolean deleted = departmentService.delete(id);
         if (deleted) {
+            employeeService.syncDepartmentCounts();
             redirectAttributes.addFlashAttribute("successMessage", "Department deleted successfully!");
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Department not found.");
@@ -54,31 +90,30 @@ public class DepartmentController {
     }
 
     // REST API Endpoints
-    @GetMapping("/api/departments")
+    @GetMapping("/api")
     @ResponseBody
     public List<Department> getAllDepartmentsApi() {
         employeeService.syncDepartmentCounts();
-        return departmentService.getAllDepartments();
+        return departmentService.getAll();
     }
 
-    @GetMapping("/api/departments/{id}")
+    @GetMapping("/api/{id}")
     @ResponseBody
     public ResponseEntity<Department> getDepartmentByIdApi(@PathVariable Long id) {
-        return departmentService.getDepartmentById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Department dept = departmentService.getById(id);
+        return dept != null ? ResponseEntity.ok(dept) : ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/api/departments")
+    @PostMapping("/api")
     @ResponseBody
     public Department createDepartmentApi(@RequestBody Department department) {
-        return departmentService.saveDepartment(department);
+        return departmentService.create(department);
     }
 
-    @DeleteMapping("/api/departments/{id}")
+    @DeleteMapping("/api/{id}")
     @ResponseBody
     public ResponseEntity<Void> deleteDepartmentApi(@PathVariable Long id) {
-        boolean deleted = departmentService.deleteDepartment(id);
+        boolean deleted = departmentService.delete(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }

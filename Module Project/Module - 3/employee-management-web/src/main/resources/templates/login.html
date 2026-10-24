@@ -3,46 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Employee Management System</title>
-    <link rel="stylesheet" th:href="@{/style.css}">
+    <title>Employee Management System - Login</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body class="login-wrapper">
     <div class="login-card">
         <div class="login-header">
-            <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🏢</div>
-            <h1>Employee Portal</h1>
-            <p>SRM-IST Full Stack Practical - Module 3</p>
+            <div class="login-logo">🏢</div>
+            <h1>Enterprise Portal</h1>
+            <p>Employee Management System • Module 3</p>
         </div>
 
-        <!-- Alerts -->
-        <div th:if="${errorMessage}" class="alert alert-danger">
-            <span th:text="${errorMessage}"></span>
-        </div>
-        <div th:if="${logoutMessage}" class="alert alert-success">
-            <span th:text="${logoutMessage}"></span>
+        <!-- Error Notification -->
+        <div class="alert alert-danger" th:if="${error}" th:text="${error}">
+            Invalid username or password
         </div>
 
         <form th:action="@{/login}" method="post">
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" name="username" class="form-control" placeholder="Enter username (e.g. admin)" required autofocus>
+                <input type="text" id="username" name="username" class="form-control"
+                       placeholder="Enter username (e.g. hr, manager)" required autofocus>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 1rem;">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" class="form-control" placeholder="Enter password (e.g. admin123)" required>
+                <input type="password" id="password" name="password" class="form-control"
+                       placeholder="Enter password (e.g. 1234)" required>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">
-                Sign In to System
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
+                Secure Sign In →
             </button>
         </form>
 
-        <div class="credentials-box">
-            <strong>Default Demo Credentials:</strong>
-            <div>• <b>Admin:</b> admin / admin123 (Full Access)</div>
-            <div>• <b>Manager:</b> manager / manager123 (Add & Edit)</div>
-            <div>• <b>Employee:</b> employee / employee123 (View Only)</div>
+        <div class="demo-users-card">
+            <h4>Available Demo Credentials</h4>
+            <div class="cred-row">
+                <span class="badge badge-hr">HR</span>
+                <span>Username: <b>hr</b> &nbsp;|&nbsp; Pass: <b>1234</b></span>
+            </div>
+            <div class="cred-row">
+                <span class="badge badge-mgr">Manager</span>
+                <span>Username: <b>manager</b> &nbsp;|&nbsp; Pass: <b>1234</b></span>
+            </div>
+            <div class="cred-row">
+                <span class="badge badge-emp">Employee</span>
+                <span>Username: <b>employee</b> &nbsp;|&nbsp; Pass: <b>1234</b></span>
+            </div>
         </div>
     </div>
 </body>
