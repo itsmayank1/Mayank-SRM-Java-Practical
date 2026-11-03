@@ -1,6 +1,6 @@
 # Module Project - SRM Full Stack Practical
 
-This repository contains the three core practical modules developed for the Java Full Stack curriculum.
+This repository contains the practical modules developed for the Java Full Stack curriculum.
 
 ## Structure
 
@@ -13,13 +13,16 @@ Module Project/
 │   ├── ThreadFileProcessing/            (Multi-Threaded CSV Processing Console Application)
 │   └── calculator-executable-jar/       (Swing GUI Calculator Maven Application)
 │
-└── Module - 3/
-    ├── employee-management-web/         (MAIN PROJECT: Employee Management System Web Application)
-    └── Additional Projects/             (Supplementary Spring Core & MVC Projects)
-        ├── dependency-injection-ioc/    (Spring Core XML-based IoC & DI)
-        ├── first-spring-app/            (Spring Core Annotation Context)
-        ├── request-mapping-controller/  (Spring Boot REST Web API Application)
-        └── spring-mvc/                  (Spring Web MVC WAR Application)
+├── Module - 3/
+│   ├── employee-management-web/         (MAIN PROJECT: Employee Management System Web Application)
+│   └── Additional Projects/             (Supplementary Spring Core & MVC Projects)
+│       ├── dependency-injection-ioc/    (Spring Core XML-based IoC & DI)
+│       ├── first-spring-app/            (Spring Core Annotation Context)
+│       ├── request-mapping-controller/  (Spring Boot REST Web API Application)
+│       └── spring-mvc/                  (Spring Web MVC WAR Application)
+│
+└── Module - 4/
+    └── hospital-appointment-system/     (MAIN PROJECT: Hospital Appointment System JPA & Thymeleaf Web App)
 ```
 
 ---
@@ -86,32 +89,39 @@ java -jar target/calculator-executable-jar-1.0-SNAPSHOT.jar
 cd "Module Project/Module - 3/employee-management-web"
 mvn spring-boot:run
 ```
-*Access via browser: `http://localhost:8080` (Default admin credentials: `admin` / `admin123`).*
+*Access via browser: `http://localhost:8080` (Default admin credentials: `hr` / `1234` or `admin` / `admin123`).*
 
 ---
 
 ### 📚 Additional Projects (`Additional Projects/`)
 
 1. **`dependency-injection-ioc`**: Classic Spring XML configuration (`applicationContext.xml`), constructor/setter injection, bean lifecycle callbacks, and multiple messaging services.
-   ```bash
-   cd "Module Project/Module - 3/Additional Projects/dependency-injection-ioc"
-   mvn compile exec:java
-   ```
-
 2. **`first-spring-app`**: Annotation-driven Spring context using `@Configuration`, `@ComponentScan`, `@Service`, and `@Autowired`.
-   ```bash
-   cd "Module Project/Module - 3/Additional Projects/first-spring-app"
-   mvn compile exec:java
-   ```
-
 3. **`request-mapping-controller`**: Spring Boot RESTful Web API implementing `@RestController` and `@RequestMapping("/api/students")` with full CRUD operations.
-   ```bash
-   cd "Module Project/Module - 3/Additional Projects/request-mapping-controller"
-   mvn spring-boot:run
-   ```
-
 4. **`spring-mvc`**: Traditional Spring Web MVC architecture with `DispatcherServlet`, `CalculatorWebController`, and interactive JSP views packaged into a WAR.
-   ```bash
-   cd "Module Project/Module - 3/Additional Projects/spring-mvc"
-   mvn clean package -DskipTests
-   ```
+
+---
+
+## Module - 4: Spring Data JPA & Thymeleaf Web Mini-Project
+
+### 🏥 Main Project: `hospital-appointment-system`
+**Hospital Appointment System — Mini Project With HTML/CSS/Thymeleaf**
+- **Technologies**: Spring Boot 3.3.4, Spring Web, Spring Data JPA, Hibernate, MySQL Driver / Embedded H2, Thymeleaf.
+- **Relational Model**:
+  - `Department`: Specialized clinical units with head physicians (`@OneToMany` with Doctors).
+  - `Doctor`: Specialist doctors with consulting days, hours, and department links.
+  - `Patient`: Medical profiles with age, gender, blood group, contact, and address.
+  - `Appointment`: Outpatient scheduling connecting Doctors and Patients with room assignments, consultation fees, and real-time status management.
+- **Web Views**:
+  - `index.html`: Executive dashboard with live KPI counters, today's schedule, and instant booking widget.
+  - `departments.html`: Department directory, clinical wings, and doctor counts.
+  - `doctors.html`: Specialist physician roster with search and department filtering.
+  - `patients.html`: Patient registration and medical records directory.
+  - `appointments.html`: Comprehensive appointment desk with filter by status/doctor/date and quick status toggles.
+- **Automated Testing**: 12 unit and integration tests covering JPA repositories, entities, and Web controller endpoints with 100% pass rate.
+
+```bash
+cd "Module Project/Module - 4/hospital-appointment-system"
+.\mvnw.cmd spring-boot:run
+```
+*Access via browser: `http://localhost:8080`*

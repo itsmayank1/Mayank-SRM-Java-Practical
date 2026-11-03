@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments Desk - CityCare Hospital</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav>
+        <a href="/" class="nav-brand-group">
+            <span class="brand-icon">🏥</span>
+            <h2>CityCare Hospital</h2>
+            <span class="badge-tag">Module - 4</span>
+        </a>
+        <div class="nav-right">
+            <a href="/" class="nav-link">Dashboard</a>
+            <a href="/departments" class="nav-link">Departments</a>
+            <a href="/doctors" class="nav-link">Doctors</a>
+            <a href="/patients" class="nav-link">Patients</a>
+            <a href="/appointments" class="nav-link active">Appointments</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>Outpatient Appointments Desk</h1>
+                <p class="subtitle">Book patient visits, manage consultation statuses, rooms, and fees.</p>
+            </div>
+            <div>
+                <a href="#bookAppointmentForm" class="btn btn-primary">+ Schedule Appointment</a>
+            </div>
+        </div>
+
+        <!-- Flash Alerts -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <!-- Filter Controls -->
+        <div class="filter-panel">
+            <form th:action="@{/appointments}" method="get" class="search-filter-form">
+                <select name="status" class="form-control" style="max-width: 180px;">
+                    <option value="ALL">All Statuses</option>
+                    <option value="Scheduled" th:selected="${selectedStatus == 'Scheduled'}">Scheduled</option>
+                    <option value="Confirmed" th:selected="${selectedStatus == 'Confirmed'}">Confirmed</option>
+                    <option value="Completed" th:selected="${selectedStatus == 'Completed'}">Completed</option>
+                    <option value="Cancelled" th:selected="${selectedStatus == 'Cancelled'}">Cancelled</option>
+                </select>
+
+                <select name="doctorId" class="form-control" style="max-width: 240px;">
+                    <option value="">All Specialist Doctors</option>
+                    <option th:each="doc : ${doctors}"
+                            th:value="${doc.id}"
+                            th:text="'Dr. ' + ${doc.name} + ' (' + ${doc.departmentName} + ')'"
+                            th:selected="${selectedDoctorId != null and selectedDoctorId == doc.id}">
+                    </option>
+                </select>
+
+                <input type="date" name="date" class="form-control" style="max-width: 180px;"
+                       th:value="${selectedDate}">
+
+                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                <a href="/appointments" class="btn btn-secondary btn-sm">Reset</a>
+            </form>
+        </div>
+
+        <!-- Appointments Table Card -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+                <h3>Appointments Log (<span th:text="${appointments.size()}">0</span>)</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Schedule</th>
+                            <th>Patient</th>
+                            <th>Specialist Physician</th>
+                            <th>Reason / Symptoms</th>
+                            <th>Room & Fee</th>
+                            <th>Status</th>
+                            <th>Update Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${appointments.empty}">
+                            <td colspan="9" style="text-align: center; color: #64748b; padding: 2.5rem;">
+                                No appointments found for the specified filter criteria.
+                            </td>
+                        </tr>
+                        <tr th:each="app : ${appointments}">
+                            <td><span class="id-tag" th:text="'#' + ${app.id}">#1</span></td>
+                            <td>
+                                <strong th:text="${app.appointmentDate}">2026-11-03</strong>
+                                <div class="text-muted" style="font-size: 0.8rem;" th:text="${app.appointmentTime}">10:30 AM</div>
+                            </td>
+                            <td>
+                                <strong th:text="${app.patientName}">Mayank Upadhyay</strong>
+                                <div class="text-muted" style="font-size: 0.775rem;" th:text="${app.patient.phone}">9876543210</div>
+                            </td>
+                            <td>
+                                <strong th:text="'Dr. ' + ${app.doctorName}">Dr. Rajesh Sharma</strong>
+                                <div class="text-muted" style="font-size: 0.775rem;" th:text="${app.departmentName}">Cardiology</div>
+                            </td>
+                            <td>
+                                <span th:text="${app.reason != null && !app.reason.isBlank() ? app.reason : 'Routine Consultation'}">Cardio review</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-dept" th:text="${app.roomNumber}">OPD-302</span>
+                                <div style="font-size: 0.8rem; font-weight: 700; color: #0284c7; margin-top: 0.2rem;"
+                                     th:text="'₹' + ${#numbers.formatDecimal(app.consultationFee, 1, 'COMMA', 2, 'POINT')}">₹800.00</div>
+                            </td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${app.status == 'Confirmed' ? 'badge-confirmed' : (app.status == 'Scheduled' ? 'badge-scheduled' : (app.status == 'Completed' ? 'badge-completed' : 'badge-cancelled'))}"
+                                      th:text="${app.status}">Confirmed</span>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 0.3rem;">
+                                    <a th:if="${app.status != 'Confirmed'}"
+                                       th:href="@{'/appointments/status/' + ${app.id} + '?status=Confirmed'}"
+                                       class="btn-action success" title="Confirm">✔</a>
+                                    <a th:if="${app.status != 'Completed'}"
+                                       th:href="@{'/appointments/status/' + ${app.id} + '?status=Completed'}"
+                                       class="btn-action" style="background: #e0e7ff; color: #3730a3;" title="Mark Completed">✓✓</a>
+                                    <a th:if="${app.status != 'Cancelled'}"
+                                       th:href="@{'/appointments/status/' + ${app.id} + '?status=Cancelled'}"
+                                       class="btn-action delete" title="Cancel Appointment">✕</a>
+                                </div>
+                            </td>
+                            <td>
+                                <a th:href="@{'/appointments/delete/' + ${app.id}}"
+                                   class="btn-action delete"
+                                   onclick="return confirm('Permanently delete this appointment record?')"
+                                   title="Delete Record">
+                                    🗑️
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Schedule New Appointment Form -->
+        <div class="form-card" id="bookAppointmentForm">
+            <div class="card-header" style="margin: -2rem -2rem 1.5rem -2rem; padding: 1.25rem 2rem;">
+                <h3>+ Schedule New Patient Appointment</h3>
+            </div>
+            <form th:action="@{/appointments/book}" th:object="${newAppointment}" method="post">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="docSelect">Select Specialist Doctor *</label>
+                        <select id="docSelect" name="doctorId" class="form-control" required>
+                            <option value="">-- Choose Doctor --</option>
+                            <option th:each="doc : ${doctors}"
+                                    th:value="${doc.id}"
+                                    th:text="'Dr. ' + ${doc.name} + ' (' + ${doc.specialization} + ' - ' + ${doc.departmentName} + ')'">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="patSelect">Select Patient *</label>
+                        <select id="patSelect" name="patientId" class="form-control" required>
+                            <option value="">-- Choose Patient --</option>
+                            <option th:each="pat : ${patients}"
+                                    th:value="${pat.id}"
+                                    th:text="${pat.name} + ' (' + ${pat.phone} + ' - ' + ${pat.bloodGroup} + ')'">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dateInput">Appointment Date *</label>
+                        <input type="date" id="dateInput" th:field="*{appointmentDate}" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timeInput">Appointment Time *</label>
+                        <input type="text" id="timeInput" th:field="*{appointmentTime}" class="form-control" placeholder="e.g. 11:30 AM" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="roomInput">Room / Clinic Number</label>
+                        <input type="text" id="roomInput" th:field="*{roomNumber}" class="form-control" placeholder="e.g. OPD-302">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feeInput">Consultation Fee (INR ₹)</label>
+                        <input type="number" id="feeInput" th:field="*{consultationFee}" class="form-control" step="50" min="0" placeholder="e.g. 750">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="reasonInput">Consultation Reason / Clinical Symptoms</label>
+                        <input type="text" id="reasonInput" th:field="*{reason}" class="form-control" placeholder="e.g. Joint inflammation, cardiac follow-up, general malaise">
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn btn-primary">
+                        📅 Confirm & Book Appointment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 SRM-IST Java Full Stack Practical • Module - 4: Hospital Appointment System</p>
+    </footer>
+</body>
+</html>

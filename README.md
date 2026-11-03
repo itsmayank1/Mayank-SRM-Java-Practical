@@ -20,13 +20,16 @@ Mayank-SRM-Java-Practical/
 │   │   ├── ThreadFileProcessing/            (Multi-Threaded CSV Processing Engine)
 │   │   └── calculator-executable-jar/       (Swing GUI Calculator Executable JAR)
 │   │
-│   └── Module - 3/
-│       ├── employee-management-web/         (MAIN PROJECT: Employee Management Web App)
-│       └── Additional Projects/             (Supplementary Spring Core & MVC Projects)
-│           ├── dependency-injection-ioc/    (Spring Core XML-based IoC & DI)
-│           ├── first-spring-app/            (Spring Core Annotation Context)
-│           ├── request-mapping-controller/  (Spring Boot REST Web Controller)
-│           └── spring-mvc/                  (Spring Web MVC WAR Application)
+│   ├── Module - 3/
+│   │   ├── employee-management-web/         (MAIN PROJECT: Employee Management Web App)
+│   │   └── Additional Projects/             (Supplementary Spring Core & MVC Projects)
+│   │       ├── dependency-injection-ioc/    (Spring Core XML-based IoC & DI)
+│   │       ├── first-spring-app/            (Spring Core Annotation Context)
+│   │       ├── request-mapping-controller/  (Spring Boot REST Web Controller)
+│   │       └── spring-mvc/                  (Spring Web MVC WAR Application)
+│   │
+│   └── Module - 4/
+│       └── hospital-appointment-system/     (MAIN PROJECT: Hospital Appointment System JPA & Thymeleaf)
 │
 └── Assignment Project/
     └── Assignment - 1/
@@ -79,7 +82,6 @@ A Graphical User Interface (GUI) calculator built with Java Swing and packaged a
 - **Scientific Functions**: `MOD (%)`, `POW (x^y)`, `SQRT (√x)`, `PERCENT (%)`.
 - **Controls**: `CLEAR (C)`, `DEL (Backspace)`, `+/- (Sign Toggle)`, `EXIT`.
 - **History Log**: Scrollable real-time calculation audit log.
-- **Clean Number Formatting**: Integer results display cleanly without redundant decimals, with zero-division protection.
 
 **Build & Run Command**:
 ```bash
@@ -96,7 +98,7 @@ java -jar target/calculator-executable-jar-1.0-SNAPSHOT.jar
 **Employee Management System — Mini Project With Web Page**
 - **Technologies**: Spring Boot 3.3.4, Spring MVC, Spring Security 6, Spring JWT (JJWT 0.12.6), Thymeleaf.
 - **Data Persistence**: In-memory `ArrayList` (`CopyOnWriteArrayList`) with synchronized department relationships.
-- **Security & JWT**: Custom login page (`/login`), role-based authorization (`ROLE_ADMIN`, `ROLE_MANAGER`, `ROLE_USER`), and REST JWT token generator (`/api/auth/token`).
+- **Security & JWT**: Custom login page (`/login`), role-based authorization (`ADMIN`, `MANAGER`, `USER`), and REST JWT token generator (`/api/auth/token`).
 - **Web UI**: Interactive dashboard with payroll & department metrics, search/filter, and full CRUD.
 
 **Run Command**:
@@ -104,35 +106,40 @@ java -jar target/calculator-executable-jar-1.0-SNAPSHOT.jar
 cd "Module Project/Module - 3/employee-management-web"
 mvn spring-boot:run
 ```
-*Access via browser: `http://localhost:8080` (Default credentials: `admin` / `admin123`).*
+*Access via browser: `http://localhost:8080` (Default credentials: `hr` / `1234` or `admin` / `admin123`).*
+
+#### 📚 Additional Projects (`Additional Projects/`)
+- `dependency-injection-ioc`: XML-based IoC & DI with lifecycle callbacks.
+- `first-spring-app`: Pure annotation-driven Spring context.
+- `request-mapping-controller`: Spring Boot RESTful Web API with Student CRUD.
+- `spring-mvc`: Standard DispatcherServlet and JSP views.
 
 ---
 
-#### 📚 Additional Projects (`Additional Projects/`)
+### Module - 4: Spring Data JPA & Thymeleaf Web Mini-Project
 
-1. **`dependency-injection-ioc`**: Classic Spring XML configuration (`applicationContext.xml`), constructor/setter injection, bean lifecycle callbacks, and multiple messaging services.
-   ```bash
-   cd "Module Project/Module - 3/Additional Projects/dependency-injection-ioc"
-   mvn compile exec:java
-   ```
+#### 🏥 Main Project: `hospital-appointment-system`
+**Hospital Appointment System — Mini Project With HTML/CSS/Thymeleaf**
+- **Technologies**: Spring Boot 3.3.4, Spring Web, Spring Data JPA (Hibernate), MySQL Connector / Embedded H2 Database, Thymeleaf.
+- **Relational Architecture**:
+  - `Department`: Specialized clinical units with head physicians (`@OneToMany` with Doctors).
+  - `Doctor`: Specialist doctors with consulting days, hours, and department links.
+  - `Patient`: Medical profiles with age, gender, blood group, contact, and address.
+  - `Appointment`: Outpatient scheduling connecting Doctors and Patients with room assignments, consultation fees, and real-time status management.
+- **Web Views**:
+  - `index.html`: Executive dashboard with live KPI counters, today's schedule, and instant booking widget.
+  - `departments.html`: Department directory, clinical wings, and doctor counts.
+  - `doctors.html`: Specialist physician roster with search and department filtering.
+  - `patients.html`: Patient registration and medical records directory.
+  - `appointments.html`: Comprehensive appointment desk with filter by status/doctor/date and quick status toggles.
+- **Automated Testing**: 12 unit and integration tests covering JPA repositories, entities, and Web controller endpoints with 100% pass rate.
 
-2. **`first-spring-app`**: Annotation-driven Spring context using `@Configuration`, `@ComponentScan`, `@Service`, and `@Autowired`.
-   ```bash
-   cd "Module Project/Module - 3/Additional Projects/first-spring-app"
-   mvn compile exec:java
-   ```
-
-3. **`request-mapping-controller`**: Spring Boot RESTful Web API implementing `@RestController` and `@RequestMapping("/api/students")` with full CRUD operations.
-   ```bash
-   cd "Module Project/Module - 3/Additional Projects/request-mapping-controller"
-   mvn spring-boot:run
-   ```
-
-4. **`spring-mvc`**: Traditional Spring Web MVC architecture with `DispatcherServlet`, `CalculatorWebController`, and interactive JSP views packaged into a WAR.
-   ```bash
-   cd "Module Project/Module - 3/Additional Projects/spring-mvc"
-   mvn clean package -DskipTests
-   ```
+**Run Command**:
+```bash
+cd "Module Project/Module - 4/hospital-appointment-system"
+.\mvnw.cmd spring-boot:run
+```
+*Access via browser: `http://localhost:8080`*
 
 ---
 
@@ -140,13 +147,6 @@ mvn spring-boot:run
 
 ### Assignment - 1: Spring Boot Task - 5-Page Website
 A multi-page responsive web application built using **Spring Boot** and **Spring Web** with clean static page routing and modern styling.
-
-- **Pages**:
-  - `Home Page` (`http://localhost:8080/`): Welcome header, introduction, and global navigation menu.
-  - `Project Creator Page` (`http://localhost:8080/about.html`): Profile of the student developer.
-  - `Product Page` (`http://localhost:8080/product.html`): Application info, target audience, and tech stack.
-  - `Features Page` (`http://localhost:8080/features.html`): Checklist of capabilities and interactive demo table.
-  - `Contact Page` (`http://localhost:8080/contact.html`): Student contact details and feedback form.
 
 **Run Command**:
 ```bash

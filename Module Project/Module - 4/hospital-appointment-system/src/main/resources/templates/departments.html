@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical Departments - CityCare Hospital</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav>
+        <a href="/" class="nav-brand-group">
+            <span class="brand-icon">🏥</span>
+            <h2>CityCare Hospital</h2>
+            <span class="badge-tag">Module - 4</span>
+        </a>
+        <div class="nav-right">
+            <a href="/" class="nav-link">Dashboard</a>
+            <a href="/departments" class="nav-link active">Departments</a>
+            <a href="/doctors" class="nav-link">Doctors</a>
+            <a href="/patients" class="nav-link">Patients</a>
+            <a href="/appointments" class="nav-link">Appointments</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>Clinical Departments</h1>
+                <p class="subtitle">Specialized hospital divisions, diagnostic facilities, and medical wings.</p>
+            </div>
+            <div>
+                <a href="/doctors" class="btn btn-secondary btn-sm">View Doctors Roster →</a>
+            </div>
+        </div>
+
+        <!-- Flash Alerts -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <!-- Two Column Grid: Departments Table & Add Department Form -->
+        <div class="two-col-grid" style="grid-template-columns: 1.6fr 1fr;">
+            <!-- Left: Departments Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>All Departments (<span th:text="${departments.size()}">0</span>)</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Department</th>
+                                <th>Location</th>
+                                <th>Department Head</th>
+                                <th>Staff</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${departments.empty}">
+                                <td colspan="6" style="text-align: center; color: #64748b; padding: 2rem;">No departments configured yet.</td>
+                            </tr>
+                            <tr th:each="dept : ${departments}">
+                                <td><span class="id-tag" th:text="'#' + ${dept.id}">#1</span></td>
+                                <td>
+                                    <strong th:text="${dept.name}">Cardiology</strong>
+                                    <div class="text-muted" style="font-size: 0.8rem;" th:text="${dept.description}">Heart Care</div>
+                                </td>
+                                <td th:text="${dept.location}">Wing A - 3rd Floor</td>
+                                <td th:text="${dept.headDoctor}">Dr. Rajesh Sharma</td>
+                                <td>
+                                    <a th:href="@{'/doctors?deptId=' + ${dept.id}}"
+                                       class="badge badge-dept"
+                                       style="text-decoration: none; background: var(--primary-light); color: var(--primary-dark);"
+                                       th:text="${dept.doctorCount} + ' Doctors'">
+                                        2 Doctors
+                                    </a>
+                                </td>
+                                <td>
+                                    <a th:href="@{'/departments/delete/' + ${dept.id}}"
+                                       class="btn-action delete"
+                                       onclick="return confirm('Are you sure you want to delete this department?')"
+                                       title="Delete Department">
+                                        🗑️ Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right: Add New Department Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>+ Add Department</h3>
+                </div>
+                <div style="padding: 1.5rem;">
+                    <form th:action="@{/departments/save}" th:object="${newDepartment}" method="post">
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label for="deptName">Department Name *</label>
+                            <input type="text" id="deptName" th:field="*{name}" class="form-control"
+                                   placeholder="e.g. Ophthalmology, Oncology" required>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label for="deptDesc">Description / Specialty</label>
+                            <input type="text" id="deptDesc" th:field="*{description}" class="form-control"
+                                   placeholder="e.g. Eye surgeries and retinal care">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label for="deptLoc">Building / Floor Location *</label>
+                            <input type="text" id="deptLoc" th:field="*{location}" class="form-control"
+                                   placeholder="e.g. Wing C - 3rd Floor" required>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="deptHead">Head of Department</label>
+                            <input type="text" id="deptHead" th:field="*{headDoctor}" class="form-control"
+                                   placeholder="e.g. Dr. Ramesh Gupta">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                            💾 Save Department Record
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 SRM-IST Java Full Stack Practical • Module - 4: Hospital Appointment System</p>
+    </footer>
+</body>
+</html>

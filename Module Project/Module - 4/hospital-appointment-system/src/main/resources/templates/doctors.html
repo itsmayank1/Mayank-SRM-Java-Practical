@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specialist Doctors - CityCare Hospital</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav>
+        <a href="/" class="nav-brand-group">
+            <span class="brand-icon">🏥</span>
+            <h2>CityCare Hospital</h2>
+            <span class="badge-tag">Module - 4</span>
+        </a>
+        <div class="nav-right">
+            <a href="/" class="nav-link">Dashboard</a>
+            <a href="/departments" class="nav-link">Departments</a>
+            <a href="/doctors" class="nav-link active">Doctors</a>
+            <a href="/patients" class="nav-link">Patients</a>
+            <a href="/appointments" class="nav-link">Appointments</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>Consultant Doctors Roster</h1>
+                <p class="subtitle">Search, filter by clinical department, and manage physician consulting hours.</p>
+            </div>
+            <div>
+                <a href="#addDoctorForm" class="btn btn-primary">+ Register New Doctor</a>
+            </div>
+        </div>
+
+        <!-- Flash Alerts -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <!-- Filter & Search Bar -->
+        <div class="filter-panel">
+            <form th:action="@{/doctors}" method="get" class="search-filter-form">
+                <input type="text" name="keyword" class="form-control"
+                       placeholder="🔍 Search doctor by name or specialty..."
+                       th:value="${keyword}">
+
+                <select name="deptId" class="form-control" style="max-width: 250px;">
+                    <option value="">All Clinical Departments</option>
+                    <option th:each="dept : ${departments}"
+                            th:value="${dept.id}"
+                            th:text="${dept.name}"
+                            th:selected="${selectedDeptId != null and selectedDeptId == dept.id}">
+                    </option>
+                </select>
+
+                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                <a href="/doctors" class="btn btn-secondary btn-sm">Reset</a>
+            </form>
+        </div>
+
+        <!-- Doctors Table Card -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+                <h3>Physician Directory (<span th:text="${doctors.size()}">0</span>)</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Doctor Profile</th>
+                            <th>Department</th>
+                            <th>Qualifications</th>
+                            <th>Contact</th>
+                            <th>Consulting Hours</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${doctors.empty}">
+                            <td colspan="7" style="text-align: center; color: #64748b; padding: 2.5rem;">
+                                No doctors found matching the specified criteria.
+                            </td>
+                        </tr>
+                        <tr th:each="doc : ${doctors}">
+                            <td><span class="id-tag" th:text="'#' + ${doc.id}">#1</span></td>
+                            <td>
+                                <strong th:text="'Dr. ' + ${doc.name}">Dr. Rajesh Sharma</strong>
+                                <div class="text-muted" style="font-size: 0.8rem;" th:text="${doc.specialization}">Cardiologist</div>
+                            </td>
+                            <td>
+                                <span class="badge badge-dept" th:text="${doc.departmentName}">Cardiology</span>
+                            </td>
+                            <td>
+                                <span th:text="${doc.qualification}">MD, DM (Cardio)</span>
+                            </td>
+                            <td>
+                                <div th:text="${doc.phone}">9876540001</div>
+                                <div class="text-muted" style="font-size: 0.775rem;" th:text="${doc.email}">doctor@hospital.com</div>
+                            </td>
+                            <td>
+                                <strong th:text="${doc.availableDays}">Mon, Wed, Fri</strong>
+                                <div class="text-muted" style="font-size: 0.775rem;" th:text="${doc.consultingHours}">09:00 AM - 01:00 PM</div>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <a th:href="@{'/appointments?doctorId=' + ${doc.id}}"
+                                       class="btn-action success" title="View Appointments">
+                                        📅 Bookings
+                                    </a>
+                                    <a th:href="@{'/doctors/delete/' + ${doc.id}}"
+                                       class="btn-action delete"
+                                       onclick="return confirm('Remove this doctor profile?')" title="Delete Doctor">
+                                        🗑️ Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Add Doctor Form Card -->
+        <div class="form-card" id="addDoctorForm">
+            <div class="card-header" style="margin: -2rem -2rem 1.5rem -2rem; padding: 1.25rem 2rem;">
+                <h3>+ Register New Doctor</h3>
+            </div>
+            <form th:action="@{/doctors/save}" th:object="${newDoctor}" method="post">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="docName">Doctor Name *</label>
+                        <input type="text" id="docName" th:field="*{name}" class="form-control" placeholder="e.g. Sanjay Verma" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="docSpecialization">Specialization / Designation *</label>
+                        <input type="text" id="docSpecialization" th:field="*{specialization}" class="form-control" placeholder="e.g. Consultant Pulmonologist" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="departmentId">Clinical Department *</label>
+                        <select id="departmentId" name="departmentId" class="form-control" required>
+                            <option value="">-- Choose Department --</option>
+                            <option th:each="dept : ${departments}"
+                                    th:value="${dept.id}"
+                                    th:text="${dept.name}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="docQualification">Qualifications</label>
+                        <input type="text" id="docQualification" th:field="*{qualification}" class="form-control" placeholder="e.g. MBBS, MD, FRCP">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="docPhone">Contact Phone *</label>
+                        <input type="tel" id="docPhone" th:field="*{phone}" class="form-control" placeholder="e.g. 9876540010" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="docEmail">Email Address</label>
+                        <input type="email" id="docEmail" th:field="*{email}" class="form-control" placeholder="e.g. doctor@hospital.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="docDays">Consulting Days</label>
+                        <input type="text" id="docDays" th:field="*{availableDays}" class="form-control" placeholder="e.g. Mon, Wed, Fri">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="docHours">Consulting Hours</label>
+                        <input type="text" id="docHours" th:field="*{consultingHours}" class="form-control" placeholder="e.g. 10:00 AM - 02:00 PM">
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn btn-primary">
+                        💾 Register Doctor Record
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 SRM-IST Java Full Stack Practical • Module - 4: Hospital Appointment System</p>
+    </footer>
+</body>
+</html>

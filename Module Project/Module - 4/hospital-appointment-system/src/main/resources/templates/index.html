@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Appointment System - Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav>
+        <a href="/" class="nav-brand-group">
+            <span class="brand-icon">🏥</span>
+            <h2>CityCare Hospital</h2>
+            <span class="badge-tag">Module - 4</span>
+        </a>
+        <div class="nav-right">
+            <a href="/" class="nav-link active">Dashboard</a>
+            <a href="/departments" class="nav-link">Departments</a>
+            <a href="/doctors" class="nav-link">Doctors</a>
+            <a href="/patients" class="nav-link">Patients</a>
+            <a href="/appointments" class="nav-link">Appointments</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>Hospital Appointment Management</h1>
+                <p class="subtitle">Real-time outpatient bookings, physician schedules, and patient records.</p>
+            </div>
+            <div>
+                <a href="/appointments" class="btn btn-primary">+ Book Appointment</a>
+            </div>
+        </div>
+
+        <!-- Flash Alerts -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <!-- Metric KPI Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span class="stat-label">Departments</span>
+                    <h3 class="stat-value" th:text="${totalDepartments}">5</h3>
+                </div>
+                <div class="stat-icon bg-purple">🏛️</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span class="stat-label">Specialist Doctors</span>
+                    <h3 class="stat-value" th:text="${totalDoctors}">6</h3>
+                </div>
+                <div class="stat-icon bg-blue">👨‍⚕️</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span class="stat-label">Registered Patients</span>
+                    <h3 class="stat-value" th:text="${totalPatients}">5</h3>
+                </div>
+                <div class="stat-icon bg-teal">👤</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span class="stat-label">Total Appointments</span>
+                    <h3 class="stat-value" th:text="${totalAppointments}">5</h3>
+                </div>
+                <div class="stat-icon bg-amber">📅</div>
+            </div>
+        </div>
+
+        <!-- Quick Access Cards -->
+        <div class="cards-quick-nav">
+            <a href="/departments" class="nav-card">
+                <div class="nav-card-icon">🏛️</div>
+                <div>
+                    <h3>Clinical Departments</h3>
+                    <p>Cardiology, Neurology, Orthopedics, Pediatrics, & Primary OPD.</p>
+                </div>
+                <span class="nav-card-arrow">→</span>
+            </a>
+
+            <a href="/doctors" class="nav-card">
+                <div class="nav-card-icon">👨‍⚕️</div>
+                <div>
+                    <h3>Specialist Physicians</h3>
+                    <p>Consulting hours, qualifications, days, and department duty.</p>
+                </div>
+                <span class="nav-card-arrow">→</span>
+            </a>
+
+            <a href="/patients" class="nav-card">
+                <div class="nav-card-icon">👤</div>
+                <div>
+                    <h3>Patient Directory</h3>
+                    <p>Medical profiles, contact information, age, and blood group.</p>
+                </div>
+                <span class="nav-card-arrow">→</span>
+            </a>
+
+            <a href="/appointments" class="nav-card">
+                <div class="nav-card-icon">📅</div>
+                <div>
+                    <h3>Appointment Desk</h3>
+                    <p>Schedule visits, track consultations, and update status.</p>
+                </div>
+                <span class="nav-card-arrow">→</span>
+            </a>
+        </div>
+
+        <!-- 2-Column Section: Today's Appointments & Quick Booking -->
+        <div class="two-col-grid">
+            <!-- Left: Upcoming / Recent Appointments -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Recent Appointments</h3>
+                    <a href="/appointments" class="btn-text">View All →</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${recentAppointments.empty}">
+                                <td colspan="4" style="text-align: center; color: #64748b; padding: 2rem;">No appointments scheduled yet.</td>
+                            </tr>
+                            <tr th:each="app : ${recentAppointments}">
+                                <td>
+                                    <strong th:text="${app.appointmentDate}">2026-11-03</strong>
+                                    <div class="text-muted" style="font-size: 0.8rem;" th:text="${app.appointmentTime}">10:30 AM</div>
+                                </td>
+                                <td>
+                                    <strong th:text="${app.patientName}">Mayank Upadhyay</strong>
+                                </td>
+                                <td>
+                                    <span th:text="'Dr. ' + ${app.doctorName}">Dr. Rajesh Sharma</span>
+                                    <div class="text-muted" style="font-size: 0.775rem;" th:text="${app.departmentName}">Cardiology</div>
+                                </td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${app.status == 'Confirmed' ? 'badge-confirmed' : (app.status == 'Scheduled' ? 'badge-scheduled' : (app.status == 'Completed' ? 'badge-completed' : 'badge-cancelled'))}"
+                                          th:text="${app.status}">Confirmed</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right: Quick Booking Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Quick Appointment Booking</h3>
+                    <span class="badge-dept">Instant Desk</span>
+                </div>
+                <div style="padding: 1.5rem;">
+                    <form th:action="@{/appointments/book}" method="post">
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label for="doctorId">Select Doctor *</label>
+                            <select id="doctorId" name="doctorId" class="form-control" required>
+                                <option value="">-- Choose Specialist Doctor --</option>
+                                <option th:each="doc : ${doctors}"
+                                        th:value="${doc.id}"
+                                        th:text="'Dr. ' + ${doc.name} + ' (' + ${doc.specialization} + ' - ' + ${doc.departmentName} + ')'">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label for="patientId">Select Patient *</label>
+                            <select id="patientId" name="patientId" class="form-control" required>
+                                <option value="">-- Choose Registered Patient --</option>
+                                <option th:each="pat : ${patients}"
+                                        th:value="${pat.id}"
+                                        th:text="${pat.name} + ' (' + ${pat.phone} + ')'">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div class="form-group">
+                                <label for="appDate">Appointment Date *</label>
+                                <input type="date" id="appDate" name="appointmentDate" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="appTime">Appointment Time *</label>
+                                <input type="text" id="appTime" name="appointmentTime" class="form-control" placeholder="e.g. 10:30 AM" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1.25rem;">
+                            <label for="reason">Consultation Reason / Symptoms</label>
+                            <input type="text" id="reason" name="reason" class="form-control" placeholder="e.g. Health checkup, prescription review">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                            📅 Confirm Appointment Booking
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 SRM-IST Java Full Stack Practical • Module - 4: Hospital Appointment System</p>
+    </footer>
+</body>
+</html>

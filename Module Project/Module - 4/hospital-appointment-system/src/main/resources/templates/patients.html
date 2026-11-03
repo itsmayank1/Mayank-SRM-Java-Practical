@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patients Directory - CityCare Hospital</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav>
+        <a href="/" class="nav-brand-group">
+            <span class="brand-icon">🏥</span>
+            <h2>CityCare Hospital</h2>
+            <span class="badge-tag">Module - 4</span>
+        </a>
+        <div class="nav-right">
+            <a href="/" class="nav-link">Dashboard</a>
+            <a href="/departments" class="nav-link">Departments</a>
+            <a href="/doctors" class="nav-link">Doctors</a>
+            <a href="/patients" class="nav-link active">Patients</a>
+            <a href="/appointments" class="nav-link">Appointments</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>Patients Directory</h1>
+                <p class="subtitle">Patient registration, medical demographics, contact details, and history.</p>
+            </div>
+            <div>
+                <a href="#addPatientForm" class="btn btn-teal">+ Register New Patient</a>
+            </div>
+        </div>
+
+        <!-- Flash Alerts -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <!-- Search Bar -->
+        <div class="filter-panel">
+            <form th:action="@{/patients}" method="get" class="search-filter-form">
+                <input type="text" name="keyword" class="form-control"
+                       placeholder="🔍 Search patient by name, phone number, or email..."
+                       th:value="${keyword}">
+
+                <button type="submit" class="btn btn-primary btn-sm">Search</button>
+                <a href="/patients" class="btn btn-secondary btn-sm">Reset</a>
+            </form>
+        </div>
+
+        <!-- Patients Table Card -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+                <h3>Registered Patients (<span th:text="${patients.size()}">0</span>)</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Patient Name</th>
+                            <th>Demographics</th>
+                            <th>Blood Group</th>
+                            <th>Contact</th>
+                            <th>Address / City</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${patients.empty}">
+                            <td colspan="7" style="text-align: center; color: #64748b; padding: 2.5rem;">
+                                No patient records found.
+                            </td>
+                        </tr>
+                        <tr th:each="pat : ${patients}">
+                            <td><span class="id-tag" th:text="'#' + ${pat.id}">#1</span></td>
+                            <td>
+                                <strong th:text="${pat.name}">Mayank Upadhyay</strong>
+                            </td>
+                            <td>
+                                <span th:text="${pat.gender}">Male</span>,
+                                <span th:text="${pat.age} + ' yrs'">21 yrs</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-amber" th:text="${pat.bloodGroup}">B+</span>
+                            </td>
+                            <td>
+                                <div th:text="${pat.phone}">9876543210</div>
+                                <div class="text-muted" style="font-size: 0.775rem;" th:text="${pat.email}">mayank@example.com</div>
+                            </td>
+                            <td th:text="${pat.address}">Chennai, Tamil Nadu</td>
+                            <td>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <a th:href="@{'/appointments'}"
+                                       class="btn-action success" title="Book Consultation">
+                                        📅 Book
+                                    </a>
+                                    <a th:href="@{'/patients/delete/' + ${pat.id}}"
+                                       class="btn-action delete"
+                                       onclick="return confirm('Delete this patient record?')" title="Delete Record">
+                                        🗑️ Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Register Patient Form Card -->
+        <div class="form-card" id="addPatientForm">
+            <div class="card-header" style="margin: -2rem -2rem 1.5rem -2rem; padding: 1.25rem 2rem;">
+                <h3>+ Register New Patient</h3>
+            </div>
+            <form th:action="@{/patients/save}" th:object="${newPatient}" method="post">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="patName">Full Name *</label>
+                        <input type="text" id="patName" th:field="*{name}" class="form-control" placeholder="e.g. Mayank Upadhyay" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="patPhone">Contact Phone *</label>
+                        <input type="tel" id="patPhone" th:field="*{phone}" class="form-control" placeholder="e.g. 9876543210" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="patEmail">Email Address</label>
+                        <input type="email" id="patEmail" th:field="*{email}" class="form-control" placeholder="e.g. patient@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="patAge">Age *</label>
+                        <input type="number" id="patAge" th:field="*{age}" class="form-control" min="1" max="120" placeholder="e.g. 25" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="patGender">Gender *</label>
+                        <select id="patGender" th:field="*{gender}" class="form-control" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="patBlood">Blood Group *</label>
+                        <select id="patBlood" th:field="*{bloodGroup}" class="form-control" required>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="patAddress">Residential Address / City</label>
+                        <input type="text" id="patAddress" th:field="*{address}" class="form-control" placeholder="e.g. Kattankulathur, Chennai">
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn btn-teal">
+                        💾 Register Patient Record
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 SRM-IST Java Full Stack Practical • Module - 4: Hospital Appointment System</p>
+    </footer>
+</body>
+</html>
