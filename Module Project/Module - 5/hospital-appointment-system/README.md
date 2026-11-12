@@ -1,7 +1,7 @@
 # Hospital Appointment System — Mini Project
 
 **Course**: SRM-IST CSE Core Java Full Stack Practical  
-**Module**: Module Project - 4 (Mini Project)  
+**Module**: Module Project - 5 (Mini Project)  
 **Author**: Mayank Upadhyay  
 **Technology Stack**: Spring Boot 3.3.4, Spring Web, Spring Data JPA, Hibernate, Thymeleaf, MySQL Connector / H2 Embedded Fallback, Responsive Modern Healthcare CSS
 
@@ -9,7 +9,7 @@
 
 ## 📌 Project Overview
 
-The **Hospital Appointment System** is an enterprise-grade clinical management web application developed for **Module Project - 4**. Built following the blackboard specifications, it manages specialized medical departments, physician rosters, patient registrations, and outpatient appointment bookings with complete relational data persistence via **Spring Data JPA**.
+The **Hospital Appointment System** is an enterprise-grade clinical management web application developed for **Module Project - 5**. Built following the curriculum specifications, it manages specialized medical departments, physician rosters, patient registrations, and outpatient appointment bookings with complete relational data persistence via **Spring Data JPA**.
 
 ```
 hospital-appointment-system/
@@ -94,21 +94,21 @@ hospital-appointment-system/
 
 ### 1. Run Automated Test Suite
 ```powershell
-cd "Module Project\Module - 4\hospital-appointment-system"
+cd "Module Project\Module - 5\hospital-appointment-system"
 .\mvnw.cmd clean test
 ```
 *Runs 12 unit and integration tests verifying JPA entities, database relationships, and web controller mappings.*
 
 ### 2. Run Application Locally
 ```powershell
-cd "Module Project\Module - 4\hospital-appointment-system"
+cd "Module Project\Module - 5\hospital-appointment-system"
 .\mvnw.cmd spring-boot:run
 ```
 Once initialized, open your browser at: **`http://localhost:8080`**
 
 ### 3. Run Standalone Executable JAR
 ```powershell
-cd "Module Project\Module - 4\hospital-appointment-system"
+cd "Module Project\Module - 5\hospital-appointment-system"
 java -jar target\hospital-appointment-system-1.0-SNAPSHOT.jar
 ```
 

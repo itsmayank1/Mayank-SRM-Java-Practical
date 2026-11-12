@@ -28,7 +28,14 @@ Mayank-SRM-Java-Practical/
 │   │       ├── request-mapping-controller/  (Spring Boot REST Web Controller)
 │   │       └── spring-mvc/                  (Spring Web MVC WAR Application)
 │   │
-│   └── Module - 4/
+│   ├── Module - 4/
+│   │   └── employee-management-react/       (MAIN PROJECT: React 19 + Vite SPA with Spring Boot REST Integration)
+│   │       └── employee-management-react-springboot/
+│   │           └── employee-management-react-frontend/
+│   │               ├── src/                 (React Components, Pages, Context, Styles)
+│   │               └── backend-integration/ (Spring Boot REST Replacement Controllers & Security)
+│   │
+│   └── Module - 5/
 │       └── hospital-appointment-system/     (MAIN PROJECT: Hospital Appointment System JPA & Thymeleaf)
 │
 └── Assignment Project/
@@ -106,7 +113,7 @@ java -jar target/calculator-executable-jar-1.0-SNAPSHOT.jar
 cd "Module Project/Module - 3/employee-management-web"
 mvn spring-boot:run
 ```
-*Access via browser: `http://localhost:8080` (Default credentials: `hr` / `1234` or `admin` / `admin123`).*
+*Access via browser: `http://localhost:8080` (Default credentials: `hr` / `1234`, `manager` / `1234`, `employee` / `1234`).*
 
 #### 📚 Additional Projects (`Additional Projects/`)
 - `dependency-injection-ioc`: XML-based IoC & DI with lifecycle callbacks.
@@ -116,7 +123,28 @@ mvn spring-boot:run
 
 ---
 
-### Module - 4: Spring Data JPA & Thymeleaf Web Mini-Project
+### Module - 4: Employee Management System (React Frontend + Spring Boot REST)
+
+#### ⚛️ Main Project: `employee-management-react`
+**Single Page Application (SPA) with React 19, Vite, and Spring Boot REST API Integration**
+- **Frontend Stack**: React 19, Vite, React Router v7 (`react-router-dom`), Vanilla CSS.
+- **Role-Based Access**:
+  - `HR`: View, create, update, and delete employees; create new departments.
+  - `Manager`: View and update employee details.
+  - `Employee`: View employee and department directories.
+- **REST Integration**: Pure JSON REST controllers replacing server-rendered Thymeleaf templates (`/api/auth/**`, `/api/employees/**`, `/api/departments/**`).
+- **Seamless SPA Routing**: `ReactForwardController` handles direct deep-linking and browser refreshes by forwarding SPA routes to `/index.html`.
+
+**Run Command**:
+```bash
+cd "Module Project/Module - 4/employee-management-react/employee-management-react-springboot/employee-management-react-frontend"
+npm install
+npm run dev
+```
+
+---
+
+### Module - 5: Spring Data JPA & Thymeleaf Web Mini-Project
 
 #### 🏥 Main Project: `hospital-appointment-system`
 **Hospital Appointment System — Mini Project With HTML/CSS/Thymeleaf**
@@ -136,7 +164,7 @@ mvn spring-boot:run
 
 **Run Command**:
 ```bash
-cd "Module Project/Module - 4/hospital-appointment-system"
+cd "Module Project/Module - 5/hospital-appointment-system"
 .\mvnw.cmd spring-boot:run
 ```
 *Access via browser: `http://localhost:8080`*
