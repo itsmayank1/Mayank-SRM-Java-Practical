@@ -35,3 +35,8 @@ replay_pid*
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Node / Frontend build
+node_modules/
+dist/
+package-lock.json
